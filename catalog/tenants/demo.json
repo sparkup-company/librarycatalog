@@ -1,0 +1,7 @@
+{
+  "id": "demo",
+  "name": "Demo Bibliothek",
+  "colors": { "primary": "#2c5f8a" },
+  "adapter": "koha",
+  "apiBase": "https://koha.adminkuhn.ch:8443/api/v1"
+}

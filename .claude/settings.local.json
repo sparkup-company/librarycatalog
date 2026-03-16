@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.koha-community.org)",
+      "WebFetch(domain:koha.adminkuhn.ch)",
+      "Bash(curl:*)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}

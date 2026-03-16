@@ -1,0 +1,22 @@
+# Next.js
+catalog/.next/
+catalog/out/
+catalog/node_modules/
+
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+catalog/.env.local
+catalog/.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
