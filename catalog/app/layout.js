@@ -1,4 +1,5 @@
 import { getTenantConfig } from '../lib/catalog/index.js'
+import { buildCssVars } from '../lib/colors.js'
 import Script from 'next/script'
 import './globals.css'
 
@@ -8,10 +9,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   const tenant = getTenantConfig()
+  const cssVars = buildCssVars(tenant.colors)
+  const cssVarStr = Object.entries(cssVars).map(([k,v]) => `${k}:${v}`).join(';')
 
   return (
     <html lang="de">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        {tenant.logoFavicon && <link rel="icon" href={tenant.logoFavicon} />}
+        <style>{`:root{${cssVarStr}}`}</style>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
@@ -25,12 +31,23 @@ export default function RootLayout({ children }) {
           <aside className="sidebar">
             <div className="sidebar-inner">
               <a href="/" className="sidebar-logo">
-                <div className="logo-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/>
-                  </svg>
-                </div>
-                <span className="sidebar-logo-text">{tenant.name}</span>
+                {tenant.logoFavicon ? (
+                  <>
+                    <div className="logo-icon logo-icon--img">
+                      <img src={tenant.logoFavicon} alt={tenant.name} />
+                    </div>
+                    <img src={tenant.logoFull} alt={tenant.name} className="logo-full" />
+                  </>
+                ) : (
+                  <>
+                    <div className="logo-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/>
+                      </svg>
+                    </div>
+                    <span className="sidebar-logo-text">{tenant.name}</span>
+                  </>
+                )}
               </a>
 
               <nav className="sidebar-nav">
@@ -77,11 +94,51 @@ export default function RootLayout({ children }) {
               </div>
             </div>
           </aside>
+          <div className="sidebar-backdrop" />
 
           {/* Main content */}
           <div className="main-area">
             {children}
           </div>
+
+          {/* Bottom Nav (mobile only, shown via CSS) */}
+          <nav className="bottom-nav">
+            <a href="/" className="bottom-nav-item bottom-nav-item--active">
+              <span className="bottom-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                </svg>
+              </span>
+              <span className="bottom-nav-label">Entdecken</span>
+            </a>
+            <a href="#" className="bottom-nav-item">
+              <span className="bottom-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/>
+                  <rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
+                </svg>
+              </span>
+              <span className="bottom-nav-label">Kategorien</span>
+            </a>
+            <a href="#" className="bottom-nav-item">
+              <span className="bottom-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </span>
+              <span className="bottom-nav-label">Favoriten</span>
+            </a>
+            <a href="#" className="bottom-nav-item">
+              <span className="bottom-nav-icon">
+                <div className="bottom-nav-avatar">JS</div>
+              </span>
+              <span className="bottom-nav-label">Profil</span>
+            </a>
+          </nav>
         </div>
       </body>
     </html>

@@ -5,7 +5,15 @@
       "WebFetch(domain:koha.adminkuhn.ch)",
       "Bash(curl:*)",
       "WebSearch",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:openlibrary.org)",
+      "Bash(find:*)",
+      "WebFetch(domain:koha-community.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:app.superdesign.dev)",
+      "Bash(superdesign:*)",
+      "WebFetch(domain:p.superdesign.dev)",
+      "Bash(cd:*)"
     ]
   }
 }

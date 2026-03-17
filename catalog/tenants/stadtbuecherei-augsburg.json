@@ -1,0 +1,9 @@
+{
+  "id": "augsburg",
+  "name": "Stadtbücherei Augsburg",
+  "colors": { "primary": "#E6470F", "primaryLight": "#fde8df" },
+  "adapter": "koha",
+  "apiBase": "https://koha.adminkuhn.ch:8443/api/v1",
+  "logoFull": "/tenants/augsburg/logo.png",
+  "logoFavicon": "/tenants/augsburg/favicon.png"
+}

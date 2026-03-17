@@ -1,8 +1,7 @@
 import { Suspense } from 'react'
-import Link from 'next/link'
 import { getCatalogAdapter } from '../lib/catalog/index.js'
 import SearchForm from './SearchForm.js'
-import BookCover from './BookCover.js'
+import BookCard from './BookCard.js'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,11 +9,21 @@ export default async function HomePage({ searchParams }) {
   const q = searchParams?.q?.trim() ?? ''
   let biblios = []
   let error = null
+  let activePatrons = 0
+  try {
+    const catalog = getCatalogAdapter()
+    activePatrons = await catalog.getActivePatronCount()
+  } catch { /* non-critical */ }
 
+  let availabilityMap = {}
   if (q) {
     try {
       const catalog = getCatalogAdapter()
       biblios = await catalog.searchBiblios(q)
+      try {
+        const ids = biblios.map(b => b.biblio_id ?? b.biblionumber).filter(Boolean)
+        availabilityMap = await catalog.getItemsForBiblios(ids)
+      } catch { /* non-critical */ }
     } catch (err) {
       error = err.message
     }
@@ -24,9 +33,12 @@ export default async function HomePage({ searchParams }) {
     <>
       {/* Hero */}
       <section className="hero">
-        <div className="hero-badge">
-          50.000+ Medien in unserer Bibliothek
-        </div>
+        {activePatrons === 1 && (
+          <div className="hero-badge">1 andere Person nutzt gerade die Bibliothek mit dir!</div>
+        )}
+        {activePatrons > 1 && (
+          <div className="hero-badge">{activePatrons} andere Personen nutzen gerade die Bibliothek mit dir!</div>
+        )}
         <h1>
           Deine nächste <br />
           <span className="highlight">Geschichte</span> wartet schon.
@@ -54,23 +66,11 @@ export default async function HomePage({ searchParams }) {
             <span className="results-count">{biblios.length} Treffer für „{q}"</span>
           </div>
           <div className="results-grid">
-            {biblios.map((b) => (
-              <div key={b.biblio_id ?? b.biblionumber} className="book-card">
-                <BookCover isbn={b.isbn} title={b.title} />
-                <div className="book-card-body">
-                  <Link
-                    href={`/biblios/${b.biblio_id ?? b.biblionumber}`}
-                    className="book-card-title"
-                  >
-                    {b.title ?? '–'}
-                  </Link>
-                  <p className="book-card-author">{b.author ?? '–'}</p>
-                  {(b.copyright_date ?? b.copyrightdate) && (
-                    <p className="book-card-year">{b.copyright_date ?? b.copyrightdate}</p>
-                  )}
-                </div>
-              </div>
-            ))}
+            {biblios.map((b) => {
+              const id = b.biblio_id ?? b.biblionumber
+              const items = availabilityMap[id] ?? []
+              return <BookCard key={id} biblio={b} items={items} />
+            })}
           </div>
         </div>
       )}

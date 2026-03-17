@@ -17,6 +17,9 @@ catalog/.env.*.local
 npm-debug.log*
 yarn-debug.log*
 
+# Seed script (no git tracking needed)
+seed/
+
 # OS
 .DS_Store
 Thumbs.db

@@ -50,5 +50,22 @@ export function createKohaAdapter({ apiBase, sessionCookie }) {
     return Array.isArray(data) ? data : (data.results ?? [])
   }
 
-  return { searchBiblios, getBiblio, getItems }
+  async function getActivePatronCount() {
+    const res = await fetch(`${apiBase}/checkouts?_per_page=500`, { headers, cache: 'no-store' })
+    if (!res.ok) throw new Error(`Koha getActivePatronCount failed: ${res.status}`)
+    const data = await res.json()
+    const checkouts = Array.isArray(data) ? data : (data.results ?? [])
+    return new Set(checkouts.map(c => c.patron_id)).size
+  }
+
+  async function getItemsForBiblios(biblioIds) {
+    const results = await Promise.all(
+      biblioIds.map(id =>
+        getItems(id).then(items => ({ id, items })).catch(() => ({ id, items: [] }))
+      )
+    )
+    return Object.fromEntries(results.map(({ id, items }) => [id, items]))
+  }
+
+  return { searchBiblios, getBiblio, getItems, getItemsForBiblios, getActivePatronCount }
 }

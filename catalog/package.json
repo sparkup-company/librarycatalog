@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "nano": "^11.0.4",
     "next": "^14.2.35",
     "react": "^18",
     "react-dom": "^18"

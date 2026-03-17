@@ -1,10 +1,16 @@
+import { headers } from 'next/headers'
 import { createKohaAdapter } from './adapters/koha.js'
 import demo from '../../tenants/demo.json'
+import augsburg from '../../tenants/stadtbuecherei-augsburg.json'
+import fuerth from '../../tenants/fuerth.json'
 
-// For now: always load the demo tenant.
-// Later: resolve tenant by request hostname.
+const tenants = { demo, augsburg, fuerth }
+
 function getTenant() {
-  return demo
+  const host = headers().get('host') ?? ''
+  if (host.startsWith('augsburg.')) return augsburg
+  if (host.startsWith('fuerth.')) return fuerth
+  return demo  // fallback
 }
 
 export function getCatalogAdapter() {
@@ -13,7 +19,7 @@ export function getCatalogAdapter() {
   if (tenant.adapter === 'koha') {
     return createKohaAdapter({
       apiBase: tenant.apiBase,
-      sessionCookie: process.env.KOHA_SESSION_COOKIE,
+      sessionCookie: process.env[`KOHA_SESSION_COOKIE_${tenant.id.toUpperCase()}`],
     })
   }
 
