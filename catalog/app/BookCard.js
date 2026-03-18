@@ -1,7 +1,16 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { useSession, signIn } from 'next-auth/react'
+import { Book, Headphones, Tablet, Film, Newspaper, Heart, LogOut, Bookmark, Ellipsis, Printer, Share2, Info } from 'lucide-react'
 import BookCover from './BookCover.js'
+
+const MEDIA_ICONS = {
+  'Hörbuch':     Headphones,
+  'E-Book':      Tablet,
+  'Film':        Film,
+  'Zeitschrift': Newspaper,
+}
 
 function getAvailability(items) {
   if (!items.length) return { available: null, dueDate: null }
@@ -23,81 +32,134 @@ function formatDueDate(iso) {
 }
 
 export default function BookCard({ biblio, items }) {
+  const { data: session } = useSession()
   const [liked, setLiked] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
   const id = biblio.biblio_id ?? biblio.biblionumber
   const { available, dueDate } = getAvailability(items)
   const mediaType = biblio.medium ?? 'Buch'
+  const MediaIcon = MEDIA_ICONS[mediaType] ?? Book
+  const theme = biblio.subject_headings?.[0] ?? biblio.interests ?? null
+
+  // Kontextmenü schließen bei Klick außerhalb
+  useEffect(() => {
+    if (!menuOpen) return
+    function handleClick(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [menuOpen])
+
+  function handleLike() {
+    if (!session) { signIn(); return }
+    setLiked(l => !l)
+  }
+
+  function handlePrint() {
+    setMenuOpen(false)
+    window.print()
+  }
+
+  function handleShare() {
+    setMenuOpen(false)
+    const url = `${window.location.origin}/biblios/${id}`
+    if (navigator.share) {
+      navigator.share({ title: biblio.title, url })
+    } else {
+      navigator.clipboard?.writeText(url)
+    }
+  }
 
   return (
-    <div className="book-card">
-      {/* Cover */}
-      <div className="book-card-cover-wrap">
-        <BookCover isbn={biblio.isbn} title={biblio.title} />
-        <span className="book-card-media-badge">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          </svg>
-          {mediaType}
-        </span>
+    <div className="book-card-wrapper">
+      {/* Pill-Badge außerhalb der Karte */}
+      <div className={`book-card-pill${available === false ? ' book-card-pill--unavailable' : ''}`}>
+        <span className="book-card-pill-dot" />
+        <span>{available === false ? 'Ausgeliehen' : 'Verfügbar'}</span>
       </div>
 
-      {/* Body */}
-      <div className="book-card-body">
-        <div className="book-card-meta">
-          <Link href={`/biblios/${id}`} className="book-card-title">
-            {biblio.title ?? '–'}
-          </Link>
-          <p className="book-card-author">{biblio.author ?? '–'}</p>
+      {/* Karte */}
+      <div className="book-card">
+        {/* Zeile: Medientyp | Interessenkreis */}
+        <div className="book-card-toprow">
+          <span className="book-card-mediatype">
+            <MediaIcon size={14} />
+            {mediaType}
+          </span>
+          {theme && <span className="book-card-theme">{theme}</span>}
         </div>
 
-        {/* Footer row */}
-        <div className="book-card-footer">
-          {/* Left: status */}
+        {/* Titel + Autor */}
+        <Link href={`/biblios/${id}`} className="book-card-title">
+          {biblio.title ?? '–'}
+        </Link>
+        <p className="book-card-author">Von {biblio.author ?? '–'}</p>
+
+        {/* Cover */}
+        <div className="book-card-cover-area">
+          <BookCover isbn={biblio.isbn} title={biblio.title} biblioId={id} />
+        </div>
+
+        {/* Aktionen */}
+        <div className="book-card-actions">
+          <button
+            className={`book-card-like${liked ? ' book-card-like--active' : ''}`}
+            onClick={handleLike}
+            aria-label={session ? 'Merken' : 'Anmelden zum Merken'}
+            title={session ? undefined : 'Anmelden zum Merken'}
+          >
+            <Heart size={14} fill={liked ? 'currentColor' : 'none'} />
+          </button>
+
           {available === false ? (
-            <div className="book-card-status-col">
-              <span className="book-card-status-label book-card-status-label--unavailable">Ausgeliehen</span>
-              {dueDate && <span className="book-card-due">bis {formatDueDate(dueDate)}</span>}
-            </div>
+            <button className="book-card-btn book-card-btn--reserve">
+              <Bookmark size={13} />
+              Vormerken
+            </button>
           ) : (
-            <div className="book-card-status-row">
-              <span className="book-card-dot" />
-              <span className="book-card-status-label">Verfügbar</span>
-            </div>
+            <button className="book-card-btn book-card-btn--borrow">
+              <LogOut size={13} style={{ transform: 'scaleX(-1)' }} />
+              Ausleihen
+            </button>
           )}
 
-          {/* Right: actions */}
-          <div className="book-card-actions">
-            {available === false ? (
-              <button className="book-card-btn book-card-btn--reserve">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-                </svg>
-                Vormerken
-              </button>
-            ) : (
-              <>
-                <button className="book-card-btn book-card-btn--borrow">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{transform:'scaleX(-1)'}}>
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
-                  </svg>
-                  Ausleihen
+          {/* Mehr-Button + Kontextmenü */}
+          <div className="book-card-menu-wrap" ref={menuRef}>
+            <button
+              className={`book-card-more${menuOpen ? ' book-card-more--active' : ''}`}
+              aria-label="Mehr"
+              onClick={() => setMenuOpen(o => !o)}
+            >
+              <Ellipsis size={14} />
+            </button>
+
+            {menuOpen && (
+              <div className="book-card-menu">
+                <button className="book-card-menu-item" onClick={handlePrint}>
+                  <Printer size={13} />
+                  Drucken
                 </button>
-                <button
-                  className={`book-card-like${liked ? ' book-card-like--active' : ''}`}
-                  onClick={() => setLiked(l => !l)}
-                  aria-label="Merken"
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
-                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                  </svg>
+                <button className="book-card-menu-item" onClick={handleShare}>
+                  <Share2 size={13} />
+                  Teilen
                 </button>
-              </>
+                <Link href={`/biblios/${id}`} className="book-card-menu-item" onClick={() => setMenuOpen(false)}>
+                  <Info size={13} />
+                  Mehr Infos
+                </Link>
+              </div>
             )}
           </div>
         </div>
+
+        {/* Rückgabedatum */}
+        {available === false && dueDate && (
+          <p className="book-card-due">Fällig am {formatDueDate(dueDate)}</p>
+        )}
       </div>
     </div>
   )

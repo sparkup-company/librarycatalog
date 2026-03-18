@@ -1,6 +1,7 @@
 {
   "id": "demo",
   "name": "Demo Bibliothek",
+  "city": "Demostadt",
   "colors": { "primary": "#7d51ff", "primaryLight": "#e7defc" },
   "adapter": "koha",
   "apiBase": "https://koha.adminkuhn.ch:8443/api/v1"

@@ -1,21 +1,24 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 
 export default function SearchForm() {
   const router = useRouter()
   const params = useSearchParams()
   const [q, setQ] = useState(params.get('q') ?? '')
+  const [isPending, startTransition] = useTransition()
 
   function handleSubmit(e) {
     e.preventDefault()
     const trimmed = q.trim()
-    if (trimmed) {
-      router.push(`/?q=${encodeURIComponent(trimmed)}`)
-    } else {
-      router.push('/')
-    }
+    startTransition(() => {
+      if (trimmed) {
+        router.push(`/?q=${encodeURIComponent(trimmed)}`)
+      } else {
+        router.push('/')
+      }
+    })
   }
 
   return (
@@ -34,7 +37,9 @@ export default function SearchForm() {
         onChange={(e) => setQ(e.target.value)}
         autoFocus
       />
-      <button className="search-btn" type="submit">Suchen</button>
+      <button className="search-btn" type="submit" disabled={isPending}>
+        {isPending ? 'Suche …' : 'Suchen'}
+      </button>
     </form>
   )
 }

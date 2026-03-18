@@ -1,9 +1,29 @@
 {
   "id": "augsburg",
   "name": "Stadtbücherei Augsburg",
+  "city": "Augsburg",
   "colors": { "primary": "#E6470F", "primaryLight": "#fde8df" },
   "adapter": "koha",
   "apiBase": "https://koha.adminkuhn.ch:8443/api/v1",
   "logoFull": "/tenants/augsburg/logo.png",
-  "logoFavicon": "/tenants/augsburg/favicon.png"
+  "logoFavicon": "/tenants/augsburg/favicon.png",
+  "contact": {
+    "address": "Annastraße 11, 86150 Augsburg",
+    "phone": "+49 821 324-2740",
+    "email": "stadtbuecherei@augsburg.de",
+    "website": "https://www.stadtbuecherei.augsburg.de",
+    "hours": [
+      { "days": "Mo – Fr", "time": "10:00 – 19:00 Uhr" },
+      { "days": "Samstag", "time": "10:00 – 16:00 Uhr" }
+    ]
+  },
+  "footerLinks": [
+    { "label": "Bücher mit Antolin-Quiz", "href": "/suche?q=antolin" },
+    { "label": "Literatur",               "href": "/suche?q=literatur" },
+    { "label": "Sachthemen",              "href": "/suche?q=sachthemen" },
+    { "label": "Musik",                   "href": "/suche?q=musik" },
+    { "label": "Bibliothek der Dinge",    "href": "/suche?q=bibliothek+der+dinge" },
+    { "label": "Digitale Angebote",       "href": "/suche?q=digital" },
+    { "label": "Website",                 "href": "https://www.stadtbuecherei.augsburg.de", "external": true }
+  ]
 }

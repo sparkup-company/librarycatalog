@@ -1,6 +1,7 @@
 {
   "id": "fuerth",
   "name": "Stadtbibliothek Fürth",
+  "city": "Fürth",
   "colors": { "primary": "#006123", "primaryLight": "#d4ead9" },
   "logoFull": "/tenants/fuerth/logo",
   "logoFavicon": "/tenants/fuerth/favicon.png",
