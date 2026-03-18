@@ -12,7 +12,7 @@ function getTenant() {
   const host = headers().get('host') ?? ''
   if (host.startsWith('augsburg.')) return augsburg
   if (host.startsWith('fuerth.')) return fuerth
-  return demo  // fallback
+  return augsburg  // fallback
 }
 
 function createSearchBackend(tenant, authHeaders) {
