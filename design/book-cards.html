@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buchkachel — 10 Optionen</title>
+
+  <link rel="stylesheet" href="system/tenants/augsburg.css">
+  <link rel="stylesheet" href="system/tokens.css">
+  <link rel="stylesheet" href="system/components.css">
+
+  <style>
+    /* ── Page shell ── */
+    body { background: var(--n-100); }
+
+    .page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: var(--weight-bold);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: var(--space-2);
+    }
+    .page-sub {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-16);
+    }
+
+    /* Each option block */
+    .option {
+      margin-bottom: var(--space-16);
+    }
+    .option__header {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .option__num {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: var(--weight-bold);
+      color: var(--color-border);
+      line-height: 1;
+      min-width: 52px;
+    }
+    .option__name {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: var(--weight-semibold);
+    }
+    .option__desc {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-left: auto;
+      text-align: right;
+    }
+
+    /* Sample grid — show 2 states (available + borrowed) side by side */
+    .card-row {
+      display: flex;
+      gap: var(--space-6);
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    /* ── Shared icon button (like, menu) ── */
+    .icon-btn {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--duration-fast), color var(--duration-fast);
+      flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--n-100); color: var(--text-primary); }
+    .icon-btn.liked { color: #ef4444; }
+    .icon-btn svg { width: 16px; height: 16px; }
+
+    /* ════════════════════════════════════════════════════
+       OPTION 1 — Classic Vertical
+    ════════════════════════════════════════════════════ */
+    .bc1 {
+      width: 180px;
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-xs);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow var(--duration-normal) var(--ease-out),
+                  transform  var(--duration-normal) var(--ease-out);
+    }
+    .bc1:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .bc1__cover {
+      width: 100%; aspect-ratio: 2/3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px;
+      position: relative;
+    }
+    .bc1__type-badge {
+      position: absolute; top: 8px; left: 8px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(6px);
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: var(--weight-semibold);
+      color: rgba(255,255,255,0.9);
+      padding: 3px 8px;
+      line-height: 1;
+    }
+    .bc1__body { padding: 12px 12px 10px; }
+    .bc1__cat {
+      font-size: 10px;
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.07em;
+      color: var(--color-action);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .bc1__title {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      line-height: var(--leading-snug);
+      margin-bottom: 3px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .bc1__author {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .bc1__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .bc1__avail {
+      width: 7px; height: 7px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+    .bc1__avail-label { font-size: 10px; color: var(--text-secondary); flex: 1; }
+    .bc1__cta {
+      background: var(--color-action);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: var(--weight-semibold);
+      padding: 4px 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background var(--duration-fast);
+    }
+    .bc1__cta:hover { background: var(--color-action-hover); }
+    .bc1__cta--borrowed { background: var(--n-300); color: var(--text-secondary); }
+    .bc1__actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-top: 6px;
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 2 — Horizontal Compact
+    ════════════════════════════════════════════════════ */
+    .bc2 {
+      width: 360px;
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      cursor: pointer;
+      transition: box-shadow var(--duration-normal), transform var(--duration-normal);
+    }
+    .bc2:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .bc2__cover {
+      width: 64px; height: 96px;
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      box-shadow: var(--shadow-cover);
+    }
+    .bc2__body { flex: 1; min-width: 0; }
+    .bc2__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      margin-bottom: 4px;
+    }
+    .bc2__title {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: var(--weight-bold);
+      line-height: var(--leading-snug);
+      margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .bc2__author {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-2);
+    }
+    .bc2__row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+    }
+    .bc2__status {
+      display: flex; align-items: center; gap: 5px;
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+    .bc2__dot {
+      width: 6px; height: 6px;
+      border-radius: var(--radius-full);
+    }
+    .bc2__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 3 — Cover Dominant (overlay)
+    ════════════════════════════════════════════════════ */
+    .bc3 {
+      width: 200px;
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      aspect-ratio: 2/3;
+      box-shadow: var(--shadow-cover);
+      transition: transform var(--duration-slow) var(--ease-spring),
+                  box-shadow var(--duration-slow);
+    }
+    .bc3:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--shadow-xl); }
+    .bc3__cover {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 72px;
+    }
+    .bc3__badges {
+      position: absolute; top: 12px; left: 12px; right: 12px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .bc3__type-pill {
+      background: rgba(0,0,0,0.52);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius-full);
+      font-size: 10px; font-weight: var(--weight-semibold);
+      color: rgba(255,255,255,0.9);
+      padding: 3px 9px; line-height: 1;
+    }
+    .bc3__like {
+      width: 28px; height: 28px;
+      border-radius: var(--radius-full);
+      background: rgba(0,0,0,0.42);
+      backdrop-filter: blur(8px);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.8);
+      transition: background var(--duration-fast);
+    }
+    .bc3__like:hover { background: rgba(239,68,68,0.7); color: #fff; }
+    .bc3__overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.6) 55%, transparent 100%);
+      padding: 44px 14px 14px;
+    }
+    .bc3__cat {
+      font-size: 10px; font-weight: var(--weight-bold);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--color-action); margin-bottom: 3px;
+    }
+    .bc3__title {
+      font-family: var(--font-display);
+      font-size: var(--text-base); font-weight: var(--weight-bold);
+      color: #fff; line-height: var(--leading-snug);
+      margin-bottom: 2px;
+    }
+    .bc3__author { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+    .bc3__footer { display: flex; align-items: center; justify-content: space-between; }
+    .bc3__avail {
+      font-size: 10px; font-weight: var(--weight-semibold);
+      color: rgba(255,255,255,0.7);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .bc3__cta {
+      background: var(--color-action);
+      color: #fff; border: none; border-radius: var(--radius-full);
+      font-size: 10px; font-weight: var(--weight-bold);
+      padding: 5px 12px; cursor: pointer; line-height: 1;
+    }
+    .bc3__menu {
+      width: 24px; height: 24px; border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.14);
+      border: none; cursor: pointer; color: rgba(255,255,255,0.7);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 4 — Minimal / Text-First
+    ════════════════════════════════════════════════════ */
+    .bc4 {
+      width: 360px;
+      display: flex;
+      gap: var(--space-4);
+      align-items: flex-start;
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+    }
+    .bc4__cover {
+      width: 48px; height: 72px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+    .bc4__body { flex: 1; min-width: 0; }
+    .bc4__meta {
+      display: flex; gap: var(--space-2); margin-bottom: 4px;
+    }
+    .bc4__title {
+      font-size: var(--text-md); font-weight: var(--weight-bold);
+      line-height: var(--leading-snug); margin-bottom: 2px;
+    }
+    .bc4__author {
+      font-size: var(--text-sm); color: var(--text-secondary);
+      margin-bottom: var(--space-2);
+    }
+    .bc4__foot {
+      display: flex; align-items: center; gap: var(--space-2);
+    }
+    .bc4__status {
+      font-size: var(--text-xs); color: var(--text-secondary);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .bc4__cta {
+      font-size: var(--text-xs); font-weight: var(--weight-semibold);
+      color: var(--color-action); background: none; border: none;
+      cursor: pointer; padding: 0; letter-spacing: 0;
+    }
+    .bc4__cta--dis { color: var(--text-muted); }
+    .bc4__spacer { flex: 1; }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 5 — Status Stripe
+    ════════════════════════════════════════════════════ */
+    .bc5 {
+      width: 320px;
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow var(--duration-normal), transform var(--duration-normal);
+    }
+    .bc5:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .bc5__stripe {
+      width: 5px;
+      flex-shrink: 0;
+    }
+    .bc5__inner {
+      flex: 1; display: flex; gap: var(--space-4); padding: var(--space-4);
+    }
+    .bc5__cover {
+      width: 56px; height: 84px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      box-shadow: var(--shadow-sm);
+    }
+    .bc5__body { flex: 1; min-width: 0; }
+    .bc5__top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 2px;
+    }
+    .bc5__title {
+      font-family: var(--font-display);
+      font-size: var(--text-sm); font-weight: var(--weight-bold);
+      line-height: var(--leading-snug); flex: 1;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .bc5__author { font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-2); }
+    .bc5__tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: var(--space-2); }
+    .bc5__status {
+      font-size: 10px; font-weight: var(--weight-semibold);
+      margin-bottom: var(--space-2);
+    }
+    .bc5__foot {
+      display: flex; align-items: center; gap: var(--space-1);
+    }
+    .bc5__cta {
+      flex: 1;
+      height: 28px; border-radius: var(--radius-full); border: none;
+      font-size: 11px; font-weight: var(--weight-semibold);
+      cursor: pointer; transition: background var(--duration-fast);
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 6 — Action-Forward
+    ════════════════════════════════════════════════════ */
+    .bc6 {
+      width: 200px;
+      background: var(--color-surface);
+      border-radius: var(--radius-2xl);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-xs);
+      padding: var(--space-5);
+      cursor: pointer;
+      transition: box-shadow var(--duration-normal), transform var(--duration-normal);
+    }
+    .bc6:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .bc6__head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+    .bc6__cover {
+      width: 72px; height: 108px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      box-shadow: var(--shadow-cover);
+    }
+    .bc6__topright {
+      display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-1);
+    }
+    .bc6__cat {
+      font-size: 10px; font-weight: var(--weight-bold);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--color-action);
+    }
+    .bc6__title {
+      font-family: var(--font-display);
+      font-size: var(--text-base); font-weight: var(--weight-bold);
+      line-height: var(--leading-snug); margin-bottom: 3px;
+    }
+    .bc6__author {
+      font-size: var(--text-xs); color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+    .bc6__row {
+      display: flex; align-items: center; gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    .bc6__cta {
+      width: 100%; height: 40px;
+      background: var(--color-action); color: #fff;
+      border: none; border-radius: var(--radius-full);
+      font-size: var(--text-sm); font-weight: var(--weight-semibold);
+      cursor: pointer;
+      transition: background var(--duration-fast), transform var(--duration-fast);
+      margin-bottom: var(--space-2);
+    }
+    .bc6__cta:hover { background: var(--color-action-hover); transform: scale(1.02); }
+    .bc6__cta--borrowed {
+      background: var(--n-100); color: var(--text-secondary);
+    }
+    .bc6__cta--borrowed:hover { background: var(--n-200); transform: none; }
+    .bc6__sub {
+      display: flex; justify-content: center; gap: var(--space-2);
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 7 — Library Catalog Card
+    ════════════════════════════════════════════════════ */
+    .bc7 {
+      width: 340px;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-xs), 4px 5px 0 var(--color-border);
+      display: flex;
+      cursor: pointer;
+      overflow: hidden;
+      transition: box-shadow var(--duration-normal);
+    }
+    .bc7:hover {
+      box-shadow: var(--shadow-sm), 6px 8px 0 var(--color-border);
+    }
+    .bc7__cover {
+      width: 80px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px;
+    }
+    .bc7__body {
+      flex: 1;
+      padding: var(--space-4);
+      border-left: 1px solid var(--color-border);
+    }
+    .bc7__type-row {
+      display: flex; align-items: center; gap: var(--space-2); margin-bottom: 4px;
+    }
+    .bc7__type-label {
+      font-size: 9px; font-weight: var(--weight-bold); letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+    .bc7__title {
+      font-size: var(--text-md); font-weight: var(--weight-bold);
+      margin-bottom: 2px; line-height: var(--leading-snug);
+    }
+    .bc7__author {
+      font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-3);
+    }
+    .bc7__divider {
+      height: 1px; background: var(--color-border); margin-bottom: var(--space-3);
+    }
+    .bc7__row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .bc7__status {
+      font-size: var(--text-xs);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .bc7__dot { width: 6px; height: 6px; border-radius: var(--radius-full); }
+    .bc7__cta {
+      font-size: 11px; font-weight: var(--weight-semibold);
+      color: var(--color-action); background: none; border: none;
+      cursor: pointer; padding: 0;
+    }
+    .bc7__foot {
+      display: flex; align-items: center; gap: var(--space-1); margin-top: var(--space-2);
+    }
+    .bc7__cat {
+      font-size: 10px; color: var(--text-secondary);
+      background: var(--n-100); border-radius: var(--radius-sm);
+      padding: 2px 6px;
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 8 — Dark / Ambient
+    ════════════════════════════════════════════════════ */
+    .bc8 {
+      width: 200px;
+      background: var(--n-800);
+      border-radius: var(--radius-2xl);
+      border: 1px solid var(--color-dark-border);
+      padding: var(--space-5);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--duration-normal), transform var(--duration-normal);
+    }
+    .bc8:hover { border-color: var(--color-dark-border-strong); transform: translateY(-3px); }
+    .bc8__glow {
+      position: absolute; top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: var(--radius-full);
+      opacity: 0.18;
+      filter: blur(32px);
+      pointer-events: none;
+    }
+    .bc8__cover {
+      width: 100%; aspect-ratio: 2/3;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px;
+      margin-bottom: var(--space-4);
+      box-shadow: var(--shadow-cover);
+    }
+    .bc8__meta {
+      display: flex; gap: var(--space-1); margin-bottom: var(--space-2);
+    }
+    .bc8__title {
+      font-family: var(--font-display);
+      font-size: var(--text-sm); font-weight: var(--weight-bold);
+      color: var(--text-on-dark); line-height: var(--leading-snug);
+      margin-bottom: 2px;
+    }
+    .bc8__author {
+      font-size: var(--text-xs); color: var(--text-on-dark-secondary);
+      margin-bottom: var(--space-3);
+    }
+    .bc8__status {
+      font-size: 10px; font-weight: var(--weight-semibold);
+      display: flex; align-items: center; gap: 4px; margin-bottom: var(--space-3);
+    }
+    .bc8__cta {
+      width: 100%; height: 36px;
+      border-radius: var(--radius-full); border: none;
+      font-size: var(--text-xs); font-weight: var(--weight-semibold);
+      cursor: pointer; transition: opacity var(--duration-fast);
+      margin-bottom: var(--space-2);
+    }
+    .bc8__cta:hover { opacity: 0.88; }
+    .bc8__foot {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .bc8__cat {
+      font-size: 10px; color: var(--text-on-dark-muted);
+    }
+    .bc8__actions { display: flex; gap: 2px; }
+    .bc8__ibtn {
+      width: 28px; height: 28px; border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.07); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-on-dark-secondary);
+      transition: background var(--duration-fast);
+    }
+    .bc8__ibtn:hover { background: rgba(255,255,255,0.14); color: var(--text-on-dark); }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 9 — Community / Social
+    ════════════════════════════════════════════════════ */
+    .bc9 {
+      width: 280px;
+      background: var(--color-surface);
+      border-radius: var(--radius-2xl);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-xs);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow var(--duration-normal), transform var(--duration-normal);
+    }
+    .bc9:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .bc9__cover-wrap {
+      position: relative; width: 100%; aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+    .bc9__cover {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 56px;
+    }
+    .bc9__live-chip {
+      position: absolute; top: 10px; left: 10px;
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(13,11,20,0.72); backdrop-filter: blur(8px);
+      border-radius: var(--radius-full);
+      padding: 4px 10px; line-height: 1;
+    }
+    .bc9__live-dot {
+      width: 6px; height: 6px; border-radius: var(--radius-full);
+      background: var(--color-success);
+      animation: blink 2s ease-in-out infinite;
+    }
+    .bc9__live-label { font-size: 10px; font-weight: var(--weight-semibold); color: #fff; }
+    .bc9__type-chip {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(13,11,20,0.52); backdrop-filter: blur(8px);
+      border-radius: var(--radius-full); padding: 3px 8px;
+      font-size: 10px; font-weight: var(--weight-semibold);
+      color: rgba(255,255,255,0.85);
+    }
+    .bc9__body { padding: 14px; }
+    .bc9__cat {
+      font-size: 10px; font-weight: var(--weight-bold); letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--color-action); margin-bottom: 3px;
+    }
+    .bc9__title {
+      font-family: var(--font-display); font-size: var(--text-base);
+      font-weight: var(--weight-bold); margin-bottom: 2px;
+    }
+    .bc9__author { font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: 10px; }
+    .bc9__social {
+      display: flex; align-items: center; gap: var(--space-2);
+      padding: 8px 0; border-top: 1px solid var(--color-border);
+      margin-bottom: 10px;
+    }
+    .bc9__readers {
+      display: flex; align-items: center;
+    }
+    .bc9__reader-av {
+      width: 22px; height: 22px;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--color-surface);
+      margin-left: -6px; font-size: 8px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+    }
+    .bc9__reader-av:first-child { margin-left: 0; }
+    .bc9__readers-label {
+      font-size: 11px; color: var(--text-secondary); margin-left: 6px;
+    }
+    .bc9__foot {
+      display: flex; align-items: center; gap: var(--space-2);
+    }
+    .bc9__cta {
+      flex: 1; height: 34px; border-radius: var(--radius-full); border: none;
+      font-size: 12px; font-weight: var(--weight-semibold);
+      cursor: pointer; transition: background var(--duration-fast);
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       OPTION 10 — Ultra Compact Grid Tile
+    ════════════════════════════════════════════════════ */
+    .bc10 {
+      width: 130px;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow var(--duration-normal), transform var(--duration-normal);
+    }
+    .bc10:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+    .bc10__cover {
+      width: 100%; aspect-ratio: 2/3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      position: relative;
+    }
+    .bc10__avail-dot {
+      position: absolute; top: 7px; right: 7px;
+      width: 8px; height: 8px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(255,255,255,0.8);
+    }
+    .bc10__like {
+      position: absolute; bottom: 7px; right: 7px;
+      width: 22px; height: 22px; border-radius: var(--radius-full);
+      background: rgba(0,0,0,0.42); backdrop-filter: blur(4px);
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.7);
+    }
+    .bc10__body { padding: 8px; }
+    .bc10__type {
+      font-size: 9px; font-weight: var(--weight-bold); letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px;
+    }
+    .bc10__title {
+      font-size: 11px; font-weight: var(--weight-bold);
+      line-height: 1.3; margin-bottom: 1px;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .bc10__author {
+      font-size: 10px; color: var(--text-secondary); margin-bottom: 5px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .bc10__foot {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .bc10__cta {
+      flex: 1; height: 24px; border-radius: var(--radius-full); border: none;
+      font-size: 10px; font-weight: var(--weight-semibold);
+      cursor: pointer;
+    }
+    .bc10__menu {
+      width: 24px; height: 24px; border-radius: var(--radius-full);
+      background: var(--n-100); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); flex-shrink: 0;
+    }
+
+    /* ── Shared availability colors ── */
+    .avail-available { background: var(--color-success); }
+    .avail-borrowed  { background: var(--color-danger); }
+    .text-available  { color: var(--color-success-dark); }
+    .text-borrowed   { color: var(--color-danger-dark); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1 class="page-title">Buchkachel</h1>
+  <p class="page-sub">10 Layoutvarianten — jeweils mit Titel, Autor, Status, CTA, Like, Kontextmenü, Kategorie, Medientyp und Cover.</p>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 1 — Classic Vertical
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">01</span>
+      <span class="option__name">Classic Vertical</span>
+      <span class="option__desc">Standard-Kachel für Rasteransichten. Cover oben, Metadaten unten, CTA in der Fußzeile.</span>
+    </div>
+    <div class="card-row">
+
+      <div class="bc1">
+        <div class="bc1__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">
+          📖
+          <span class="bc1__type-badge">Buch</span>
+        </div>
+        <div class="bc1__body">
+          <div class="bc1__cat">Fantasy</div>
+          <div class="bc1__title">Der Alchemist</div>
+          <div class="bc1__author">Paulo Coelho</div>
+          <div class="bc1__footer">
+            <span class="bc1__avail avail-available"></span>
+            <span class="bc1__avail-label">Verfügbar</span>
+            <button class="bc1__cta">Ausleihen</button>
+          </div>
+          <div class="bc1__actions">
+            <button class="icon-btn liked" title="Liken">
+              <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc1">
+        <div class="bc1__cover" style="background:linear-gradient(145deg,#0d1a2e,#1a2e4a)">
+          🌊
+          <span class="bc1__type-badge">E-Book</span>
+        </div>
+        <div class="bc1__body">
+          <div class="bc1__cat">Sci-Fi</div>
+          <div class="bc1__title">Project Hail Mary</div>
+          <div class="bc1__author">Andy Weir</div>
+          <div class="bc1__footer">
+            <span class="bc1__avail avail-borrowed"></span>
+            <span class="bc1__avail-label">Ausgeliehen</span>
+            <button class="bc1__cta bc1__cta--borrowed">Vormerken</button>
+          </div>
+          <div class="bc1__actions">
+            <button class="icon-btn" title="Liken">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc1">
+        <div class="bc1__cover" style="background:linear-gradient(145deg,#1a2e1a,#2e4a2e)">
+          🌿
+          <span class="bc1__type-badge">Hörbuch</span>
+        </div>
+        <div class="bc1__body">
+          <div class="bc1__cat">Sachbuch</div>
+          <div class="bc1__title">Homo Deus</div>
+          <div class="bc1__author">Yuval Noah Harari</div>
+          <div class="bc1__footer">
+            <span class="bc1__avail avail-available"></span>
+            <span class="bc1__avail-label">Verfügbar</span>
+            <button class="bc1__cta">Ausleihen</button>
+          </div>
+          <div class="bc1__actions">
+            <button class="icon-btn" title="Liken">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 2 — Horizontal Compact
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">02</span>
+      <span class="option__name">Horizontal Compact</span>
+      <span class="option__desc">Für Listen- und Suchergebnisansichten. Cover links, alle Infos rechts davon.</span>
+    </div>
+    <div class="card-row" style="flex-direction:column; align-items:flex-start">
+
+      <div class="bc2">
+        <div class="bc2__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">📖</div>
+        <div class="bc2__body">
+          <div class="bc2__meta">
+            <span class="c-tag c-tag--action">Fantasy</span>
+            <span class="c-tag">Buch</span>
+          </div>
+          <div class="bc2__title">Der Alchemist</div>
+          <div class="bc2__author">Paulo Coelho</div>
+          <div class="bc2__row">
+            <div class="bc2__status">
+              <span class="bc2__dot avail-available"></span>
+              Verfügbar
+            </div>
+          </div>
+          <div class="bc2__actions">
+            <button class="c-btn c-btn--primary c-btn--sm">Ausleihen</button>
+            <button class="icon-btn" title="Liken">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc2">
+        <div class="bc2__cover" style="background:linear-gradient(145deg,#2a1a1a,#3a1a1a)">🌹</div>
+        <div class="bc2__body">
+          <div class="bc2__meta">
+            <span class="c-tag" style="background:var(--color-danger-light);color:var(--color-danger-dark)">Romantik</span>
+            <span class="c-tag">Buch</span>
+          </div>
+          <div class="bc2__title">Das Parfum</div>
+          <div class="bc2__author">Patrick Süskind</div>
+          <div class="bc2__row">
+            <div class="bc2__status">
+              <span class="bc2__dot avail-borrowed"></span>
+              Ausgeliehen
+            </div>
+          </div>
+          <div class="bc2__actions">
+            <button class="c-btn c-btn--secondary c-btn--sm">Vormerken</button>
+            <button class="icon-btn liked" title="Liken">
+              <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 3 — Cover Dominant
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">03</span>
+      <span class="option__name">Cover Dominant</span>
+      <span class="option__desc">Maximale visuelle Wirkung. Cover füllt die Kachel, Info als Overlay am unteren Rand.</span>
+    </div>
+    <div class="card-row">
+
+      <div class="bc3">
+        <div class="bc3__cover" style="background:linear-gradient(145deg,#1a1a2e,#2e1a3a)">🚀</div>
+        <div class="bc3__badges">
+          <span class="bc3__type-pill">E-Book</span>
+          <button class="bc3__like" title="Liken">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc3__overlay">
+          <div class="bc3__cat">Sci-Fi</div>
+          <div class="bc3__title">Project Hail Mary</div>
+          <div class="bc3__author">Andy Weir</div>
+          <div class="bc3__footer">
+            <div class="bc3__avail">
+              <span class="bc2__dot" style="width:6px;height:6px;border-radius:50%;background:var(--color-success);display:inline-block"></span>
+              Verfügbar
+            </div>
+            <button class="bc3__cta">Ausleihen</button>
+            <button class="bc3__menu" title="Mehr">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc3">
+        <div class="bc3__cover" style="background:linear-gradient(145deg,#2e1010,#3a1a0a)">🔥</div>
+        <div class="bc3__badges">
+          <span class="bc3__type-pill">Film</span>
+          <button class="bc3__like" style="color:#ef4444;background:rgba(239,68,68,0.25)" title="Liken">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc3__overlay">
+          <div class="bc3__cat">Thriller</div>
+          <div class="bc3__title">Feuer & Asche</div>
+          <div class="bc3__author">Lars Kepler</div>
+          <div class="bc3__footer">
+            <div class="bc3__avail">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--color-danger);display:inline-block"></span>
+              Ausgeliehen
+            </div>
+            <button class="bc3__cta" style="background:rgba(255,255,255,0.2);color:#fff">Vormerken</button>
+            <button class="bc3__menu" title="Mehr">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc3">
+        <div class="bc3__cover" style="background:linear-gradient(145deg,#102a10,#1a3a1a)">🌿</div>
+        <div class="bc3__badges">
+          <span class="bc3__type-pill">Hörbuch</span>
+          <button class="bc3__like" title="Liken">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc3__overlay">
+          <div class="bc3__cat">Wissen</div>
+          <div class="bc3__title">Homo Deus</div>
+          <div class="bc3__author">Yuval Noah Harari</div>
+          <div class="bc3__footer">
+            <div class="bc3__avail">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--color-success);display:inline-block"></span>
+              Verfügbar
+            </div>
+            <button class="bc3__cta">Ausleihen</button>
+            <button class="bc3__menu" title="Mehr">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 4 — Minimal / Text-First
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">04</span>
+      <span class="option__name">Minimal / Text-First</span>
+      <span class="option__desc">Kein Rahmen, kein Shadow. Für ruhige, redaktionelle Kontexte. Betont Titel und Autor.</span>
+    </div>
+    <div class="card-row" style="flex-direction:column;align-items:flex-start;max-width:400px">
+
+      <div class="bc4">
+        <div class="bc4__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">📖</div>
+        <div class="bc4__body">
+          <div class="bc4__meta">
+            <span class="c-tag c-tag--action">Fantasy</span>
+            <span class="c-tag">Buch</span>
+          </div>
+          <div class="bc4__title">Der Alchemist</div>
+          <div class="bc4__author">Paulo Coelho</div>
+          <div class="bc4__foot">
+            <span class="bc4__status">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--color-success);display:inline-block"></span>
+              Verfügbar
+            </span>
+            <span style="width:1px;height:12px;background:var(--color-border)"></span>
+            <button class="bc4__cta">Ausleihen →</button>
+            <span class="bc4__spacer"></span>
+            <button class="icon-btn" title="Liken" style="width:24px;height:24px">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr" style="width:24px;height:24px">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc4">
+        <div class="bc4__cover" style="background:linear-gradient(145deg,#1a2e1a,#2e4a2e)">🌿</div>
+        <div class="bc4__body">
+          <div class="bc4__meta">
+            <span class="c-tag">Sachbuch</span>
+            <span class="c-tag">Hörbuch</span>
+          </div>
+          <div class="bc4__title">Homo Deus</div>
+          <div class="bc4__author">Yuval Noah Harari</div>
+          <div class="bc4__foot">
+            <span class="bc4__status">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--color-danger);display:inline-block"></span>
+              Ausgeliehen
+            </span>
+            <span style="width:1px;height:12px;background:var(--color-border)"></span>
+            <button class="bc4__cta bc4__cta--dis">Vormerken →</button>
+            <span class="bc4__spacer"></span>
+            <button class="icon-btn liked" title="Liken" style="width:24px;height:24px">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr" style="width:24px;height:24px">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc4">
+        <div class="bc4__cover" style="background:linear-gradient(145deg,#0d1a2e,#1a2e4a)">🌊</div>
+        <div class="bc4__body">
+          <div class="bc4__meta">
+            <span class="c-tag c-tag--info">Sci-Fi</span>
+            <span class="c-tag">E-Book</span>
+          </div>
+          <div class="bc4__title">Project Hail Mary</div>
+          <div class="bc4__author">Andy Weir</div>
+          <div class="bc4__foot">
+            <span class="bc4__status">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--color-success);display:inline-block"></span>
+              Verfügbar
+            </span>
+            <span style="width:1px;height:12px;background:var(--color-border)"></span>
+            <button class="bc4__cta">Ausleihen →</button>
+            <span class="bc4__spacer"></span>
+            <button class="icon-btn" title="Liken" style="width:24px;height:24px">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr" style="width:24px;height:24px">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 5 — Status Stripe
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">05</span>
+      <span class="option__name">Status Stripe</span>
+      <span class="option__desc">Farbiger Längsbalken signalisiert Verfügbarkeit auf einen Blick. Gut für Listenansichten.</span>
+    </div>
+    <div class="card-row" style="flex-direction:column;align-items:flex-start">
+
+      <div class="bc5">
+        <div class="bc5__stripe" style="background:var(--color-success)"></div>
+        <div class="bc5__inner">
+          <div class="bc5__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">📖</div>
+          <div class="bc5__body">
+            <div class="bc5__top">
+              <div class="bc5__title">Der Alchemist</div>
+              <button class="icon-btn" title="Mehr" style="margin-top:-2px">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+              </button>
+            </div>
+            <div class="bc5__author">Paulo Coelho</div>
+            <div class="bc5__tags">
+              <span class="c-tag c-tag--action">Fantasy</span>
+              <span class="c-tag">Buch</span>
+            </div>
+            <div class="bc5__status text-available">● Verfügbar</div>
+            <div class="bc5__foot">
+              <button class="bc5__cta" style="background:var(--color-action);color:#fff">Ausleihen</button>
+              <button class="icon-btn liked" title="Liken">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc5">
+        <div class="bc5__stripe" style="background:var(--color-danger)"></div>
+        <div class="bc5__inner">
+          <div class="bc5__cover" style="background:linear-gradient(145deg,#0d1a2e,#1a2e4a)">🌊</div>
+          <div class="bc5__body">
+            <div class="bc5__top">
+              <div class="bc5__title">Project Hail Mary</div>
+              <button class="icon-btn" title="Mehr" style="margin-top:-2px">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+              </button>
+            </div>
+            <div class="bc5__author">Andy Weir</div>
+            <div class="bc5__tags">
+              <span class="c-tag c-tag--info">Sci-Fi</span>
+              <span class="c-tag">E-Book</span>
+            </div>
+            <div class="bc5__status text-borrowed">● Ausgeliehen</div>
+            <div class="bc5__foot">
+              <button class="bc5__cta" style="background:var(--n-100);color:var(--text-secondary)">Vormerken</button>
+              <button class="icon-btn" title="Liken">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 6 — Action-Forward
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">06</span>
+      <span class="option__name">Action-Forward</span>
+      <span class="option__desc">Der CTA dominiert die untere Hälfte. Für Empfehlungs- und Promotionsflächen.</span>
+    </div>
+    <div class="card-row">
+
+      <div class="bc6">
+        <div class="bc6__head">
+          <div class="bc6__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">📖</div>
+          <div class="bc6__topright">
+            <span class="bc6__cat">Fantasy</span>
+            <span class="c-tag">Buch</span>
+            <button class="icon-btn" title="Mehr" style="margin-top:auto">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="bc6__title">Der Alchemist</div>
+        <div class="bc6__author">Paulo Coelho</div>
+        <div class="bc6__row">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--color-success);display:inline-block"></span>
+          <span style="font-size:12px;color:var(--text-secondary)">Verfügbar</span>
+        </div>
+        <button class="bc6__cta">Jetzt ausleihen</button>
+        <div class="bc6__sub">
+          <button class="icon-btn liked" title="Liken">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+          <span style="font-size:11px;color:var(--text-muted)">142 Likes</span>
+        </div>
+      </div>
+
+      <div class="bc6">
+        <div class="bc6__head">
+          <div class="bc6__cover" style="background:linear-gradient(145deg,#1a2e1a,#2e4a2e)">🌿</div>
+          <div class="bc6__topright">
+            <span class="bc6__cat">Sachbuch</span>
+            <span class="c-tag">Hörbuch</span>
+            <button class="icon-btn" title="Mehr" style="margin-top:auto">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="bc6__title">Homo Deus</div>
+        <div class="bc6__author">Yuval Noah Harari</div>
+        <div class="bc6__row">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--color-danger);display:inline-block"></span>
+          <span style="font-size:12px;color:var(--text-secondary)">Ausgeliehen</span>
+        </div>
+        <button class="bc6__cta bc6__cta--borrowed">Auf Merkliste</button>
+        <div class="bc6__sub">
+          <button class="icon-btn" title="Liken">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+          <span style="font-size:11px;color:var(--text-muted)">89 Likes</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 7 — Library Catalog Card
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">07</span>
+      <span class="option__name">Bibliothekskarte</span>
+      <span class="option__desc">Steckkarte-Ästhetik mit Offset-Shadow. Strukturiert wie ein Katalogzettel.</span>
+    </div>
+    <div class="card-row" style="flex-direction:column;align-items:flex-start">
+
+      <div class="bc7">
+        <div class="bc7__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">📖</div>
+        <div class="bc7__body">
+          <div class="bc7__type-row">
+            <span class="bc7__type-label">Buch</span>
+            <span style="width:1px;height:10px;background:var(--color-border)"></span>
+            <span class="bc7__type-label">Fantasy</span>
+          </div>
+          <div class="bc7__title">Der Alchemist</div>
+          <div class="bc7__author">Paulo Coelho · 1988</div>
+          <div class="bc7__divider"></div>
+          <div class="bc7__row">
+            <div class="bc7__status">
+              <span class="bc7__dot avail-available"></span>
+              Verfügbar (3 Ex.)
+            </div>
+            <button class="bc7__cta">Ausleihen →</button>
+          </div>
+          <div class="bc7__foot">
+            <span class="bc7__cat">Abenteuer</span>
+            <span class="bc7__cat">Philosophie</span>
+            <span style="flex:1"></span>
+            <button class="icon-btn liked" title="Liken" style="width:24px;height:24px">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr" style="width:24px;height:24px">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc7">
+        <div class="bc7__cover" style="background:linear-gradient(145deg,#0d1a2e,#1a2e4a)">🌊</div>
+        <div class="bc7__body">
+          <div class="bc7__type-row">
+            <span class="bc7__type-label">E-Book</span>
+            <span style="width:1px;height:10px;background:var(--color-border)"></span>
+            <span class="bc7__type-label">Sci-Fi</span>
+          </div>
+          <div class="bc7__title">Project Hail Mary</div>
+          <div class="bc7__author">Andy Weir · 2021</div>
+          <div class="bc7__divider"></div>
+          <div class="bc7__row">
+            <div class="bc7__status">
+              <span class="bc7__dot avail-borrowed"></span>
+              Ausgeliehen (0 Ex.)
+            </div>
+            <button class="bc7__cta" style="color:var(--text-muted)">Vormerken →</button>
+          </div>
+          <div class="bc7__foot">
+            <span class="bc7__cat">Raumfahrt</span>
+            <span class="bc7__cat">Abenteuer</span>
+            <span style="flex:1"></span>
+            <button class="icon-btn" title="Liken" style="width:24px;height:24px">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="icon-btn" title="Mehr" style="width:24px;height:24px">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 8 — Dark / Ambient
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">08</span>
+      <span class="option__name">Dark / Ambient</span>
+      <span class="option__desc">Dunkle Kachel mit Ambient-Glow hinter dem Cover. Für Dark-Mode-Kontexte oder Featured-Bereiche.</span>
+    </div>
+    <div class="card-row">
+
+      <div class="bc8">
+        <div class="bc8__glow" style="background:var(--color-action)"></div>
+        <div class="bc8__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">📖</div>
+        <div class="bc8__meta">
+          <span class="c-badge c-badge--dark">Fantasy</span>
+          <span class="c-badge c-badge--dark">Buch</span>
+        </div>
+        <div class="bc8__title">Der Alchemist</div>
+        <div class="bc8__author">Paulo Coelho</div>
+        <div class="bc8__status" style="color:var(--color-success)">
+          <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block"></span>
+          Verfügbar
+        </div>
+        <button class="bc8__cta" style="background:var(--color-action);color:#fff">Ausleihen</button>
+        <div class="bc8__foot">
+          <span class="bc8__cat">142 Likes</span>
+          <div class="bc8__actions">
+            <button class="bc8__ibtn liked" title="Liken" style="color:#ef4444">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="bc8__ibtn" title="Mehr">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc8">
+        <div class="bc8__glow" style="background:#3b82f6"></div>
+        <div class="bc8__cover" style="background:linear-gradient(145deg,#0d1a2e,#1a2e4a)">🌊</div>
+        <div class="bc8__meta">
+          <span class="c-badge c-badge--dark">Sci-Fi</span>
+          <span class="c-badge c-badge--dark">E-Book</span>
+        </div>
+        <div class="bc8__title">Project Hail Mary</div>
+        <div class="bc8__author">Andy Weir</div>
+        <div class="bc8__status" style="color:var(--color-danger)">
+          <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block"></span>
+          Ausgeliehen
+        </div>
+        <button class="bc8__cta" style="background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.7)">Vormerken</button>
+        <div class="bc8__foot">
+          <span class="bc8__cat">89 Likes</span>
+          <div class="bc8__actions">
+            <button class="bc8__ibtn" title="Liken">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="bc8__ibtn" title="Mehr">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc8">
+        <div class="bc8__glow" style="background:#10b981"></div>
+        <div class="bc8__cover" style="background:linear-gradient(145deg,#1a2e1a,#2e4a2e)">🌿</div>
+        <div class="bc8__meta">
+          <span class="c-badge c-badge--dark">Sachbuch</span>
+          <span class="c-badge c-badge--dark">Hörbuch</span>
+        </div>
+        <div class="bc8__title">Homo Deus</div>
+        <div class="bc8__author">Yuval Noah Harari</div>
+        <div class="bc8__status" style="color:var(--color-success)">
+          <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block"></span>
+          Verfügbar
+        </div>
+        <button class="bc8__cta" style="background:#10b981;color:#fff">Ausleihen</button>
+        <div class="bc8__foot">
+          <span class="bc8__cat">317 Likes</span>
+          <div class="bc8__actions">
+            <button class="bc8__ibtn" title="Liken">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <button class="bc8__ibtn" title="Mehr">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 9 — Community / Social
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">09</span>
+      <span class="option__name">Community / Social</span>
+      <span class="option__desc">Zeigt wer aktuell liest, Live-Indikator, Likes. Stärkt das Gemeinschaftsgefühl.</span>
+    </div>
+    <div class="card-row">
+
+      <div class="bc9">
+        <div class="bc9__cover-wrap">
+          <div class="bc9__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">📖</div>
+          <div class="bc9__live-chip">
+            <span class="bc9__live-dot"></span>
+            <span class="bc9__live-label">3 lesen gerade</span>
+          </div>
+          <span class="bc9__type-chip">Buch</span>
+        </div>
+        <div class="bc9__body">
+          <div class="bc9__cat">Fantasy</div>
+          <div class="bc9__title">Der Alchemist</div>
+          <div class="bc9__author">Paulo Coelho</div>
+          <div class="bc9__social">
+            <div class="bc9__readers">
+              <div class="bc9__reader-av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">L</div>
+              <div class="bc9__reader-av" style="background:linear-gradient(135deg,#0d9488,#14b8a6)">A</div>
+              <div class="bc9__reader-av" style="background:linear-gradient(135deg,#ea580c,#fb923c)">S</div>
+            </div>
+            <span class="bc9__readers-label">lesen gerade</span>
+            <span style="flex:1"></span>
+            <button class="icon-btn liked" title="Liken">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <span style="font-size:11px;color:var(--text-muted)">142</span>
+            <button class="icon-btn" title="Mehr">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+          <div class="bc9__foot">
+            <button class="bc9__cta" style="background:var(--color-action);color:#fff">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc9">
+        <div class="bc9__cover-wrap">
+          <div class="bc9__cover" style="background:linear-gradient(145deg,#0d1a2e,#1a2e4a)">🌊</div>
+          <div class="bc9__live-chip">
+            <span class="bc9__live-dot" style="background:var(--color-warning)"></span>
+            <span class="bc9__live-label">Auf Warteliste</span>
+          </div>
+          <span class="bc9__type-chip">E-Book</span>
+        </div>
+        <div class="bc9__body">
+          <div class="bc9__cat">Sci-Fi</div>
+          <div class="bc9__title">Project Hail Mary</div>
+          <div class="bc9__author">Andy Weir</div>
+          <div class="bc9__social">
+            <div class="bc9__readers">
+              <div class="bc9__reader-av" style="background:linear-gradient(135deg,#db2777,#f472b6)">M</div>
+              <div class="bc9__reader-av" style="background:linear-gradient(135deg,#2563eb,#60a5fa)">T</div>
+            </div>
+            <span class="bc9__readers-label">auf Warteliste</span>
+            <span style="flex:1"></span>
+            <button class="icon-btn" title="Liken">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+            </button>
+            <span style="font-size:11px;color:var(--text-muted)">89</span>
+            <button class="icon-btn" title="Mehr">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+          <div class="bc9__foot">
+            <button class="bc9__cta" style="background:var(--n-100);color:var(--text-secondary)">Vormerken</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       OPTION 10 — Ultra Compact
+  ══════════════════════════════════════════════════════ -->
+  <div class="option">
+    <div class="option__header">
+      <span class="option__num">10</span>
+      <span class="option__name">Ultra Compact</span>
+      <span class="option__desc">Maximale Dichte für Regale, Empfehlungsreihen und kleine Viewports. Alle Infos, minimaler Platz.</span>
+    </div>
+    <div class="card-row" style="align-items:flex-start">
+
+      <div class="bc10">
+        <div class="bc10__cover" style="background:linear-gradient(145deg,#2e2010,#4a3018)">
+          📖
+          <span class="bc10__avail-dot avail-available"></span>
+          <button class="bc10__like" title="Liken">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc10__body">
+          <div class="bc10__type">Fantasy · Buch</div>
+          <div class="bc10__title">Der Alchemist</div>
+          <div class="bc10__author">Paulo Coelho</div>
+          <div class="bc10__foot">
+            <button class="bc10__cta" style="background:var(--color-action);color:#fff">Ausleihen</button>
+            <button class="bc10__menu" title="Mehr">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc10">
+        <div class="bc10__cover" style="background:linear-gradient(145deg,#0d1a2e,#1a2e4a)">
+          🌊
+          <span class="bc10__avail-dot avail-borrowed"></span>
+          <button class="bc10__like liked" title="Liken" style="color:#ef4444">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc10__body">
+          <div class="bc10__type">Sci-Fi · E-Book</div>
+          <div class="bc10__title">Project Hail Mary</div>
+          <div class="bc10__author">Andy Weir</div>
+          <div class="bc10__foot">
+            <button class="bc10__cta" style="background:var(--n-200);color:var(--text-secondary)">Vormerken</button>
+            <button class="bc10__menu" title="Mehr">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc10">
+        <div class="bc10__cover" style="background:linear-gradient(145deg,#1a2e1a,#2e4a2e)">
+          🌿
+          <span class="bc10__avail-dot avail-available"></span>
+          <button class="bc10__like" title="Liken">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc10__body">
+          <div class="bc10__type">Sachbuch · Hörbuch</div>
+          <div class="bc10__title">Homo Deus</div>
+          <div class="bc10__author">Yuval Noah Harari</div>
+          <div class="bc10__foot">
+            <button class="bc10__cta" style="background:var(--color-action);color:#fff">Ausleihen</button>
+            <button class="bc10__menu" title="Mehr">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc10">
+        <div class="bc10__cover" style="background:linear-gradient(145deg,#2a1a2e,#1a1e2e)">
+          🚀
+          <span class="bc10__avail-dot avail-available"></span>
+          <button class="bc10__like" title="Liken">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc10__body">
+          <div class="bc10__type">Sci-Fi · Film</div>
+          <div class="bc10__title">Dune</div>
+          <div class="bc10__author">Frank Herbert</div>
+          <div class="bc10__foot">
+            <button class="bc10__cta" style="background:var(--color-action);color:#fff">Ausleihen</button>
+            <button class="bc10__menu" title="Mehr">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc10">
+        <div class="bc10__cover" style="background:linear-gradient(145deg,#2e1a0a,#3a1a00)">
+          🔥
+          <span class="bc10__avail-dot avail-borrowed"></span>
+          <button class="bc10__like" title="Liken">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc10__body">
+          <div class="bc10__type">Thriller · Buch</div>
+          <div class="bc10__title">Der Schwarm</div>
+          <div class="bc10__author">Frank Schätzing</div>
+          <div class="bc10__foot">
+            <button class="bc10__cta" style="background:var(--n-200);color:var(--text-secondary)">Vormerken</button>
+            <button class="bc10__menu" title="Mehr">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc10">
+        <div class="bc10__cover" style="background:linear-gradient(145deg,#2e2a1a,#3a3010)">
+          ✨
+          <span class="bc10__avail-dot avail-available"></span>
+          <button class="bc10__like liked" title="Liken" style="color:#ef4444">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.7C7.4 13.3 1.5 9.2 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.7-5.9 7.8-6.5 8.2z"/></svg>
+          </button>
+        </div>
+        <div class="bc10__body">
+          <div class="bc10__type">Romantik · Buch</div>
+          <div class="bc10__title">Sternenkind</div>
+          <div class="bc10__author">Anna König</div>
+          <div class="bc10__foot">
+            <button class="bc10__cta" style="background:var(--color-action);color:#fff">Ausleihen</button>
+            <button class="bc10__menu" title="Mehr">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="13" r="1.2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

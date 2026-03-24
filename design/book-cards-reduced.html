@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buchkachel — Reduziert</title>
+
+  <link rel="stylesheet" href="system/tenants/augsburg.css">
+  <link rel="stylesheet" href="system/tokens.css">
+  <link rel="stylesheet" href="system/components.css">
+
+  <style>
+    body { background: #f2f2f7; } /* iOS system background */
+
+    .page { max-width: 1080px; margin: 0 auto; padding: 64px 32px 120px; }
+
+    /* ── Section header ── */
+    .section { margin-bottom: 80px; }
+    .section__label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8e8e93;
+      margin-bottom: 6px;
+    }
+    .section__title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #1c1c1e;
+      margin-bottom: 4px;
+    }
+    .section__desc {
+      font-size: 15px;
+      color: #8e8e93;
+      margin-bottom: 32px;
+      max-width: 480px;
+      line-height: 1.5;
+    }
+    .chips {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      background: #fff;
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #3c3c43;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chip-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .chip .visible { color: #1c1c1e; font-weight: 600; }
+    .chip .hidden  { color: #aeaeb2; }
+
+    .row {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    /* ══════════════════════════════════════════
+       VERSION A — Still
+       Always visible: Cover · Medientyp-Icon · Titel · Autor · Status-Dot
+       On hover: CTA + Like + Menu erscheinen
+    ══════════════════════════════════════════ */
+    .va {
+      width: 160px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .va__cover-wrap {
+      width: 160px;
+      aspect-ratio: 2/3;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.3s ease;
+      margin-bottom: 12px;
+    }
+    .va:hover .va__cover-wrap {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .va__cover-bg {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 60px;
+    }
+
+    /* Media type icon — always visible, top-left */
+    .va__type {
+      position: absolute;
+      top: 10px; left: 10px;
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .va__type svg { width: 13px; height: 13px; fill: rgba(255,255,255,0.9); }
+
+    /* Status dot — always visible, top-right */
+    .va__dot {
+      position: absolute;
+      top: 10px; right: 10px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.7);
+    }
+
+    /* CTA overlay — appears on hover */
+    .va__cta-wrap {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 36px 12px 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);
+    }
+    .va:hover .va__cta-wrap { opacity: 1; transform: none; }
+
+    .va__cta {
+      width: 100%;
+      height: 34px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,255,255,0.92);
+      color: #1c1c1e;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.15s;
+    }
+    .va__cta:hover { background: #fff; }
+    .va__cta--borrowed {
+      background: rgba(255,255,255,0.30);
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* Like + menu — appear on hover, float top-right */
+    .va__actions {
+      position: absolute;
+      top: 8px; right: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      opacity: 0;
+      transform: translateX(6px);
+      transition: opacity 0.2s ease 0.05s, transform 0.22s cubic-bezier(0.16,1,0.3,1) 0.05s;
+    }
+    .va:hover .va__actions { opacity: 1; transform: none; }
+    /* Don't double-show with the dot */
+    .va__type ~ .va__actions { top: 8px; right: 44px; flex-direction: row; }
+
+    .va__ibtn {
+      width: 28px; height: 28px;
+      border-radius: 9px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.85);
+      transition: background 0.15s;
+    }
+    .va__ibtn:hover { background: rgba(0,0,0,0.65); }
+    .va__ibtn.liked { color: #ff375f; }
+    .va__ibtn svg { width: 13px; height: 13px; }
+
+    /* Text below cover */
+    .va__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1c1c1e;
+      line-height: 1.3;
+      margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .va__author {
+      font-size: 12px;
+      color: #8e8e93;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+
+    /* ══════════════════════════════════════════
+       VERSION B — Informed
+       Immer: Cover · Titel · Autor · Status (Dot+Wort) · Medientyp-Tag
+       Hover: Like + Menu
+       Kategorie: weg
+    ══════════════════════════════════════════ */
+    .vb {
+      width: 200px;
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 0 0 0.5px rgba(0,0,0,0.04);
+      transition: box-shadow 0.25s ease, transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .vb:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.04);
+      transform: translateY(-3px);
+    }
+
+    .vb__cover {
+      width: 100%; aspect-ratio: 3/4;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 64px;
+      position: relative;
+    }
+    .vb__type-tag {
+      position: absolute;
+      bottom: 10px; left: 10px;
+      background: rgba(0,0,0,0.48);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+      letter-spacing: 0.02em;
+    }
+
+    .vb__body {
+      padding: 14px 14px 12px;
+      position: relative;
+    }
+
+    /* Like + Menu — appear on hover */
+    .vb__actions {
+      position: absolute;
+      top: 12px; right: 10px;
+      display: flex;
+      gap: 2px;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    .vb:hover .vb__actions { opacity: 1; }
+    .vb__ibtn {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: #f2f2f7;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #8e8e93;
+      transition: background 0.14s, color 0.14s;
+    }
+    .vb__ibtn:hover { background: #e5e5ea; color: #1c1c1e; }
+    .vb__ibtn.liked { color: #ff375f; }
+    .vb__ibtn svg { width: 13px; height: 13px; }
+
+    .vb__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1c1c1e;
+      line-height: 1.3;
+      margin-bottom: 2px;
+      padding-right: 64px; /* space for action buttons */
+    }
+    .vb__author {
+      font-size: 12px;
+      color: #8e8e93;
+      margin-bottom: 10px;
+    }
+    .vb__status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .vb__status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* CTA — always visible but subtle */
+    .vb__divider {
+      height: 0.5px;
+      background: rgba(60,60,67,0.1);
+      margin: 10px 0;
+    }
+    .vb__cta {
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 0;
+      transition: opacity 0.15s;
+    }
+    .vb__cta:hover { opacity: 0.72; }
+
+
+    /* ══════════════════════════════════════════
+       VERSION C — Action State
+       Status IST die Karte. Verfügbar = aktiv+farbig. Ausgeliehen = gedämpft.
+       Immer: Cover · Titel · Autor · CTA (adaptiv)
+       Medientyp: Icon auf Cover
+       Kategorie + Like + Menu: im Hover-State
+    ══════════════════════════════════════════ */
+    .vc {
+      width: 200px;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 0 0 0.5px rgba(0,0,0,0.05);
+      transition: box-shadow 0.25s ease, transform 0.25s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+    }
+    .vc:hover {
+      box-shadow: 0 10px 36px rgba(0,0,0,0.13), 0 0 0 0.5px rgba(0,0,0,0.05);
+      transform: translateY(-4px);
+    }
+    /* Borrowed state — whole card dimmed */
+    .vc--borrowed { opacity: 0.72; }
+    .vc--borrowed:hover { opacity: 1; }
+
+    .vc__cover {
+      width: 100%;
+      aspect-ratio: 2/3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 72px;
+      position: relative;
+    }
+    .vc__type-icon {
+      position: absolute;
+      top: 10px; right: 10px;
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.40);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .vc__type-icon svg { width: 13px; height: 13px; fill: rgba(255,255,255,0.88); }
+
+    /* Hover overlay: like + menu + category */
+    .vc__hover-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .vc:hover .vc__hover-overlay { opacity: 1; }
+    .vc__cat-pill {
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 8px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+    }
+    .vc__hover-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .vc__ibtn {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.40);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.88);
+      transition: background 0.14s;
+    }
+    .vc__ibtn:hover { background: rgba(0,0,0,0.65); }
+    .vc__ibtn.liked { color: #ff375f; }
+    .vc__ibtn svg { width: 13px; height: 13px; }
+
+    .vc__body {
+      padding: 13px 14px 14px;
+    }
+    .vc__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1c1c1e;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+    .vc__author {
+      font-size: 12px;
+      color: #8e8e93;
+      margin-bottom: 12px;
+    }
+
+    /* CTA — full-width pill, color signals state */
+    .vc__cta {
+      display: block;
+      width: 100%;
+      height: 38px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.12s;
+    }
+    .vc__cta:hover { opacity: 0.88; transform: scale(0.99); }
+    .vc__cta:active { transform: scale(0.97); }
+    .vc__cta--available {
+      background: var(--color-action);
+      color: #fff;
+    }
+    .vc__cta--borrowed {
+      background: #f2f2f7;
+      color: #3c3c43;
+    }
+
+    /* ── SVG icon helpers ── */
+    /* Book icon */
+    .ico-book { display:inline-block; }
+    /* Headphone icon */
+    .ico-audio { display:inline-block; }
+    /* Film icon */
+    .ico-film { display:inline-block; }
+    /* Ebook icon */
+    .ico-ebook { display:inline-block; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+
+  <!-- ══════════════════════════════════════════════════
+       VERSION A — Still
+  ══════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__label">Version A</div>
+    <div class="section__title">Still</div>
+    <div class="section__desc">Cover + Titel + Autor + Medientyp-Icon + Status-Dot. Alles weitere erscheint beim Hover. Keine Ablenkung im Ruhezustand.</div>
+
+    <div class="chips">
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Cover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Medientyp</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Titel</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Autor</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Status</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#aeaeb2"></span><span class="hidden">CTA ↗ Hover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#aeaeb2"></span><span class="hidden">Like ↗ Hover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#aeaeb2"></span><span class="hidden">Menü ↗ Hover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#ff3b30"></span><span class="hidden">Kategorie — entfernt</span></div>
+    </div>
+
+    <div class="row">
+
+      <!-- Verfügbar -->
+      <div class="va">
+        <div class="va__cover-wrap">
+          <div class="va__cover-bg" style="background:linear-gradient(160deg,#1c1c2e,#2e1c3a)">📖</div>
+          <!-- Media type -->
+          <div class="va__type">
+            <svg viewBox="0 0 16 16"><path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 2v8h8V4H4zm1 1h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"/></svg>
+          </div>
+          <!-- Status dot — always visible -->
+          <div class="va__dot" style="background:#34c759"></div>
+          <!-- Hover: like + menu -->
+          <div class="va__actions" style="top:8px;right:8px;left:auto;flex-direction:column;gap:5px">
+            <button class="va__ibtn" title="Liken">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+            </button>
+            <button class="va__ibtn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+            </button>
+          </div>
+          <!-- Hover: CTA -->
+          <div class="va__cta-wrap">
+            <button class="va__cta">Ausleihen</button>
+          </div>
+        </div>
+        <div class="va__title">Der Alchemist</div>
+        <div class="va__author">Paulo Coelho</div>
+      </div>
+
+      <!-- Ausgeliehen -->
+      <div class="va">
+        <div class="va__cover-wrap">
+          <div class="va__cover-bg" style="background:linear-gradient(160deg,#0d1a2e,#1a2e4a)">🌊</div>
+          <div class="va__type">
+            <!-- E-Book icon -->
+            <svg viewBox="0 0 16 16" fill="rgba(255,255,255,0.9)" width="13" height="13"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4zm1.5 3h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zm0 2h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1z"/></svg>
+          </div>
+          <div class="va__dot" style="background:#ff3b30"></div>
+          <div class="va__actions" style="top:8px;right:8px;left:auto;flex-direction:column;gap:5px">
+            <button class="va__ibtn liked" title="Liken">
+              <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+            </button>
+            <button class="va__ibtn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+            </button>
+          </div>
+          <div class="va__cta-wrap">
+            <button class="va__cta va__cta--borrowed">Vormerken</button>
+          </div>
+        </div>
+        <div class="va__title">Project Hail Mary</div>
+        <div class="va__author">Andy Weir</div>
+      </div>
+
+      <!-- Hörbuch -->
+      <div class="va">
+        <div class="va__cover-wrap">
+          <div class="va__cover-bg" style="background:linear-gradient(160deg,#1a2e1a,#2e4a2e)">🌿</div>
+          <div class="va__type">
+            <!-- Headphone icon -->
+            <svg viewBox="0 0 16 16" fill="rgba(255,255,255,0.9)" width="13" height="13"><path d="M8 1a6 6 0 0 0-6 6v1.5a1.5 1.5 0 0 0 1.5 1.5H4a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H3a5 5 0 0 1 10 0h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.5A1.5 1.5 0 0 0 14 8.5V7a6 6 0 0 0-6-6z"/></svg>
+          </div>
+          <div class="va__dot" style="background:#34c759"></div>
+          <div class="va__actions" style="top:8px;right:8px;left:auto;flex-direction:column;gap:5px">
+            <button class="va__ibtn" title="Liken">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+            </button>
+            <button class="va__ibtn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+            </button>
+          </div>
+          <div class="va__cta-wrap">
+            <button class="va__cta">Ausleihen</button>
+          </div>
+        </div>
+        <div class="va__title">Homo Deus</div>
+        <div class="va__author">Yuval Noah Harari</div>
+      </div>
+
+      <!-- Film -->
+      <div class="va">
+        <div class="va__cover-wrap">
+          <div class="va__cover-bg" style="background:linear-gradient(160deg,#2e1a0a,#3a2010)">🔥</div>
+          <div class="va__type">
+            <!-- Film icon -->
+            <svg viewBox="0 0 16 16" fill="rgba(255,255,255,0.9)" width="13" height="13"><path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm4 0v6H1V1h3zm1 0h2v6H5V1zm3 0h2v6H8V1zm3 0h3v6h-3V1zM1 8v2h3V8H1zm4 0v2h2V8H5zm3 0v2h2V8H8zm3 0v2h3V8h-3zM1 11v4h3v-4H1zm4 0v4h2v-4H5zm3 0v4h2v-4H8zm3 0v4h3v-4h-3z"/></svg>
+          </div>
+          <div class="va__dot" style="background:#ff3b30"></div>
+          <div class="va__actions" style="top:8px;right:8px;left:auto;flex-direction:column;gap:5px">
+            <button class="va__ibtn" title="Liken">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+            </button>
+            <button class="va__ibtn" title="Mehr">
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+            </button>
+          </div>
+          <div class="va__cta-wrap">
+            <button class="va__cta va__cta--borrowed">Vormerken</button>
+          </div>
+        </div>
+        <div class="va__title">Der Schwarm</div>
+        <div class="va__author">Frank Schätzing</div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════
+       VERSION B — Informed
+  ══════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__label">Version B</div>
+    <div class="section__title">Informed</div>
+    <div class="section__desc">5 Elemente immer sichtbar. CTA ist dauerhaft präsent, aber dezent. Like und Menü erscheinen beim Hover.</div>
+
+    <div class="chips">
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Cover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Medientyp</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Titel</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Autor</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Status</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">CTA</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#aeaeb2"></span><span class="hidden">Like ↗ Hover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#aeaeb2"></span><span class="hidden">Menü ↗ Hover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#ff3b30"></span><span class="hidden">Kategorie — entfernt</span></div>
+    </div>
+
+    <div class="row">
+
+      <div class="vb">
+        <div class="vb__cover" style="background:linear-gradient(160deg,#1c1c2e,#2e1c3a)">
+          📖
+          <span class="vb__type-tag">Buch</span>
+        </div>
+        <div class="vb__body">
+          <div class="vb__actions">
+            <button class="vb__ibtn liked" title="Liken">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+            </button>
+            <button class="vb__ibtn" title="Mehr">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+            </button>
+          </div>
+          <div class="vb__title">Der Alchemist</div>
+          <div class="vb__author">Paulo Coelho</div>
+          <div class="vb__status">
+            <span class="vb__status-dot" style="background:#34c759"></span>
+            <span style="color:#1c1c1e">Verfügbar</span>
+          </div>
+          <div class="vb__divider"></div>
+          <button class="vb__cta" style="color:var(--color-action)">Ausleihen</button>
+        </div>
+      </div>
+
+      <div class="vb">
+        <div class="vb__cover" style="background:linear-gradient(160deg,#0d1a2e,#1a2e4a)">
+          🌊
+          <span class="vb__type-tag">E-Book</span>
+        </div>
+        <div class="vb__body">
+          <div class="vb__actions">
+            <button class="vb__ibtn" title="Liken">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+            </button>
+            <button class="vb__ibtn" title="Mehr">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+            </button>
+          </div>
+          <div class="vb__title">Project Hail Mary</div>
+          <div class="vb__author">Andy Weir</div>
+          <div class="vb__status">
+            <span class="vb__status-dot" style="background:#ff3b30"></span>
+            <span style="color:#8e8e93">Ausgeliehen</span>
+          </div>
+          <div class="vb__divider"></div>
+          <button class="vb__cta" style="color:#8e8e93">Vormerken</button>
+        </div>
+      </div>
+
+      <div class="vb">
+        <div class="vb__cover" style="background:linear-gradient(160deg,#1a2e1a,#2e4a2e)">
+          🌿
+          <span class="vb__type-tag">Hörbuch</span>
+        </div>
+        <div class="vb__body">
+          <div class="vb__actions">
+            <button class="vb__ibtn" title="Liken">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+            </button>
+            <button class="vb__ibtn" title="Mehr">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+            </button>
+          </div>
+          <div class="vb__title">Homo Deus</div>
+          <div class="vb__author">Yuval Noah Harari</div>
+          <div class="vb__status">
+            <span class="vb__status-dot" style="background:#34c759"></span>
+            <span style="color:#1c1c1e">Verfügbar</span>
+          </div>
+          <div class="vb__divider"></div>
+          <button class="vb__cta" style="color:var(--color-action)">Ausleihen</button>
+        </div>
+      </div>
+
+      <div class="vb">
+        <div class="vb__cover" style="background:linear-gradient(160deg,#2a1a2e,#1a1e2e)">
+          🚀
+          <span class="vb__type-tag">Film</span>
+        </div>
+        <div class="vb__body">
+          <div class="vb__actions">
+            <button class="vb__ibtn liked" title="Liken">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+            </button>
+            <button class="vb__ibtn" title="Mehr">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+            </button>
+          </div>
+          <div class="vb__title">Dune</div>
+          <div class="vb__author">Frank Herbert</div>
+          <div class="vb__status">
+            <span class="vb__status-dot" style="background:#ff9500"></span>
+            <span style="color:#8e8e93">1 Exemplar frei</span>
+          </div>
+          <div class="vb__divider"></div>
+          <button class="vb__cta" style="color:var(--color-action)">Ausleihen</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════
+       VERSION C — Action State
+  ══════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__label">Version C</div>
+    <div class="section__title">Action State</div>
+    <div class="section__desc">Die Karte kommuniziert Verfügbarkeit durch ihre Gesamterscheinung. Ausgeliehene Bücher sind leicht gedämpft — der Status steckt im CTA, nicht in einem separaten Badge. Kategorie nur im Hover.</div>
+
+    <div class="chips">
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Cover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Medientyp-Icon</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Titel</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">Autor</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#34c759"></span><span class="visible">CTA</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#aeaeb2"></span><span class="hidden">Kategorie ↗ Hover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#aeaeb2"></span><span class="hidden">Like ↗ Hover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#aeaeb2"></span><span class="hidden">Menü ↗ Hover</span></div>
+      <div class="chip"><span class="chip-dot" style="background:#ff3b30"></span><span class="hidden">Status-Badge — entfernt</span></div>
+    </div>
+
+    <div class="row">
+
+      <!-- Verfügbar -->
+      <div class="vc">
+        <div class="vc__cover" style="background:linear-gradient(160deg,#1c1c2e,#2e1c3a)">
+          📖
+          <div class="vc__type-icon">
+            <svg viewBox="0 0 16 16" width="13" height="13"><path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 2v8h8V4H4zm1 1h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"/></svg>
+          </div>
+          <div class="vc__hover-overlay">
+            <span class="vc__cat-pill">Fantasy</span>
+            <div class="vc__hover-actions">
+              <button class="vc__ibtn liked" title="Liken">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+              </button>
+              <button class="vc__ibtn" title="Mehr">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="vc__body">
+          <div class="vc__title">Der Alchemist</div>
+          <div class="vc__author">Paulo Coelho</div>
+          <button class="vc__cta vc__cta--available">Ausleihen</button>
+        </div>
+      </div>
+
+      <!-- Ausgeliehen -->
+      <div class="vc vc--borrowed">
+        <div class="vc__cover" style="background:linear-gradient(160deg,#0d1a2e,#1a2e4a)">
+          🌊
+          <div class="vc__type-icon">
+            <svg viewBox="0 0 16 16" width="13" height="13"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4zm1.5 3h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zm0 2h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1z"/></svg>
+          </div>
+          <div class="vc__hover-overlay">
+            <span class="vc__cat-pill">Sci-Fi</span>
+            <div class="vc__hover-actions">
+              <button class="vc__ibtn" title="Liken">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+              </button>
+              <button class="vc__ibtn" title="Mehr">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="vc__body">
+          <div class="vc__title">Project Hail Mary</div>
+          <div class="vc__author">Andy Weir</div>
+          <button class="vc__cta vc__cta--borrowed">Vormerken</button>
+        </div>
+      </div>
+
+      <!-- Verfügbar -->
+      <div class="vc">
+        <div class="vc__cover" style="background:linear-gradient(160deg,#1a2e1a,#2e4a2e)">
+          🌿
+          <div class="vc__type-icon">
+            <svg viewBox="0 0 16 16" width="13" height="13"><path d="M8 1a6 6 0 0 0-6 6v1.5a1.5 1.5 0 0 0 1.5 1.5H4a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H3a5 5 0 0 1 10 0h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.5A1.5 1.5 0 0 0 14 8.5V7a6 6 0 0 0-6-6z"/></svg>
+          </div>
+          <div class="vc__hover-overlay">
+            <span class="vc__cat-pill">Sachbuch</span>
+            <div class="vc__hover-actions">
+              <button class="vc__ibtn" title="Liken">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+              </button>
+              <button class="vc__ibtn" title="Mehr">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="vc__body">
+          <div class="vc__title">Homo Deus</div>
+          <div class="vc__author">Yuval Noah Harari</div>
+          <button class="vc__cta vc__cta--available">Ausleihen</button>
+        </div>
+      </div>
+
+      <!-- Ausgeliehen -->
+      <div class="vc vc--borrowed">
+        <div class="vc__cover" style="background:linear-gradient(160deg,#2a1a1a,#3a1a1a)">
+          🌹
+          <div class="vc__type-icon">
+            <svg viewBox="0 0 16 16" width="13" height="13"><path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 2v8h8V4H4zm1 1h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"/></svg>
+          </div>
+          <div class="vc__hover-overlay">
+            <span class="vc__cat-pill">Romantik</span>
+            <div class="vc__hover-actions">
+              <button class="vc__ibtn liked" title="Liken">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.5C7.4 13.1 1.5 9 1.5 5.5a3.5 3.5 0 0 1 6.5-1.8A3.5 3.5 0 0 1 14.5 5.5c0 3.5-5.9 7.6-6.5 8z"/></svg>
+              </button>
+              <button class="vc__ibtn" title="Mehr">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="12" r="1.3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="vc__body">
+          <div class="vc__title">Das Parfum</div>
+          <div class="vc__author">Patrick Süskind</div>
+          <button class="vc__cta vc__cta--borrowed">Vormerken</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+</body>
+</html>

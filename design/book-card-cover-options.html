@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Card Cover — Container Options</title>
+  <link rel="stylesheet" href="system/tenants/augsburg.css">
+  <link rel="stylesheet" href="system/tokens.css">
+  <link rel="stylesheet" href="system/components.css">
+  <style>
+    body { background: #f2f2f7; }
+    .page { max-width: 960px; margin: 0 auto; padding: 64px 32px 120px; }
+
+    .section { margin-bottom: 88px; }
+    .section__label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #aeaeb2; margin-bottom: 6px;
+    }
+    .section__title {
+      font-family: var(--font-display); font-size: 24px; font-weight: 700;
+      letter-spacing: -0.03em; color: #1c1c1e; margin-bottom: 4px;
+    }
+    .section__desc {
+      font-size: 13px; color: #8e8e93; margin-bottom: 28px; line-height: 1.5;
+    }
+
+    .row { display: flex; gap: 20px; flex-wrap: wrap; align-items: end; }
+
+    /* ── Shared card shell ── */
+    .card {
+      width: 148px;
+      cursor: pointer;
+    }
+    .card:hover .card__cover { transform: translateY(-4px); }
+
+    .card__cover {
+      width: 100%;
+      border-radius: 13px;
+      overflow: hidden;
+      margin-bottom: 11px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.16), 0 1px 4px rgba(0,0,0,0.09);
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.28s ease;
+    }
+    .card:hover .card__cover {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    .card__title {
+      font-size: 13px; font-weight: 600; color: #1c1c1e;
+      line-height: 1.3; margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card__author {
+      font-size: 12px; color: #8e8e93;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 7px;
+    }
+    .card__meta {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: #aeaeb2;
+    }
+    .card__avail {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 5px; margin-bottom: 8px; font-size: 11px; font-weight: 500;
+      min-height: 16px;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .dot--a { background: #34c759; }
+    .dot--b { background: #ff9500; }
+    .status--a { color: #248a3d; }
+    .status--b { color: #b36200; }
+
+
+    /* ══════════════════════════════════════════════════════
+       OPTION A — Blurred same-image background
+       Die selbe Cover-URL wird unscharf skaliert als Hintergrund
+       gerendert. Darauf liegt das echte Cover containd.
+    ══════════════════════════════════════════════════════ */
+
+    .cover-a {
+      position: relative;
+      aspect-ratio: 2/3;
+    }
+    .cover-a__bg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: blur(18px) saturate(1.4) brightness(0.85);
+      transform: scale(1.15); /* hide blur edges */
+    }
+    .cover-a__frame {
+      position: absolute;
+      inset: 12px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .cover-a__img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+
+
+    /* ══════════════════════════════════════════════════════
+       OPTION B — Neutral frosted background
+       Kein Cover-Blur — stattdessen ein sehr sanftes
+       neutrales Grau. Cover liegt containd darauf.
+       Cleaner, weniger "laut".
+    ══════════════════════════════════════════════════════ */
+
+    .cover-b {
+      position: relative;
+      aspect-ratio: 2/3;
+      background: #e8e4de;
+    }
+    .cover-b__img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      object-position: bottom;
+      padding: 12px 10px 0;
+    }
+
+
+    /* ══════════════════════════════════════════════════════
+       OPTION C — Gradient background (warm to light)
+       Subtiler warm-neutraler Gradient. Cover containd,
+       am unteren Rand bündig, oben etwas Luft.
+       Kein Blur-Aufwand, elegant durch Simplizität.
+    ══════════════════════════════════════════════════════ */
+
+    .cover-c {
+      position: relative;
+      aspect-ratio: 2/3;
+      background: linear-gradient(175deg, #ddd8d0 0%, #f0ece6 100%);
+    }
+    .cover-c__img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      object-position: bottom;
+      padding: 14px 10px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+
+  <!-- OPTION A — Blurred same-image background -->
+  <div class="section">
+    <div class="section__label">Option A</div>
+    <div class="section__title">Blurred Background</div>
+    <div class="section__desc">Die selbe Cover-URL wird unscharf und übersättigt als Hintergrund gerendert. Das eigentliche Cover liegt containd darauf. Viel Charakter, kann je nach Cover unruhig werden.</div>
+
+    <div class="row">
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">3 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-a">
+            <img class="cover-a__bg" src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+            <div class="cover-a__frame"><img class="cover-a__img" src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+          </div>
+        </div>
+        <div class="card__title">Thinking, Fast and Slow</div>
+        <div class="card__author">Daniel Kahneman</div>
+        <div class="card__meta">Buch · Sachbuch</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--b"></span><span class="status--b">zurück am 31.03.</span></div>
+        <div class="card__cover">
+          <div class="cover-a">
+            <img class="cover-a__bg" src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+            <div class="cover-a__frame"><img class="cover-a__img" src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+          </div>
+        </div>
+        <div class="card__title">The Innovators</div>
+        <div class="card__author">Walter Isaacson</div>
+        <div class="card__meta">E-Book · Biografie</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">1 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-a">
+            <img class="cover-a__bg" src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+            <div class="cover-a__frame"><img class="cover-a__img" src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt=""></div>
+          </div>
+        </div>
+        <div class="card__title">A Room of One's Own</div>
+        <div class="card__author">Virginia Woolf</div>
+        <div class="card__meta">Buch · Literatur</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">2 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-a">
+            <img class="cover-a__bg" src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+            <div class="cover-a__frame"><img class="cover-a__img" src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt=""></div>
+          </div>
+        </div>
+        <div class="card__title">Sapiens</div>
+        <div class="card__author">Yuval Noah Harari</div>
+        <div class="card__meta">Buch · Geschichte</div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- OPTION B — Neutral background -->
+  <div class="section">
+    <div class="section__label">Option B</div>
+    <div class="section__title">Neutral Background</div>
+    <div class="section__desc">Einheitliches warmes Grau als Bühne. Cover containd, am unteren Rand bündig. Sehr ruhig — alle Kacheln sehen gleich strukturiert aus, unabhängig vom Cover.</div>
+
+    <div class="row">
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">3 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-b">
+            <img class="cover-b__img" src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+          </div>
+        </div>
+        <div class="card__title">Thinking, Fast and Slow</div>
+        <div class="card__author">Daniel Kahneman</div>
+        <div class="card__meta">Buch · Sachbuch</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--b"></span><span class="status--b">zurück am 31.03.</span></div>
+        <div class="card__cover">
+          <div class="cover-b">
+            <img class="cover-b__img" src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+          </div>
+        </div>
+        <div class="card__title">The Innovators</div>
+        <div class="card__author">Walter Isaacson</div>
+        <div class="card__meta">E-Book · Biografie</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">1 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-b">
+            <img class="cover-b__img" src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+          </div>
+        </div>
+        <div class="card__title">A Room of One's Own</div>
+        <div class="card__author">Virginia Woolf</div>
+        <div class="card__meta">Buch · Literatur</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">2 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-b">
+            <img class="cover-b__img" src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+          </div>
+        </div>
+        <div class="card__title">Sapiens</div>
+        <div class="card__author">Yuval Noah Harari</div>
+        <div class="card__meta">Buch · Geschichte</div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- OPTION C — Gradient background -->
+  <div class="section">
+    <div class="section__label">Option C</div>
+    <div class="section__title">Gradient Background</div>
+    <div class="section__desc">Warmer Gradient von oben nach unten. Gibt dem Container mehr Tiefe als ein flaches Grau, ohne die Unruhe eines Cover-Blurs.</div>
+
+    <div class="row">
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">3 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-c">
+            <img class="cover-c__img" src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+          </div>
+        </div>
+        <div class="card__title">Thinking, Fast and Slow</div>
+        <div class="card__author">Daniel Kahneman</div>
+        <div class="card__meta">Buch · Sachbuch</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--b"></span><span class="status--b">zurück am 31.03.</span></div>
+        <div class="card__cover">
+          <div class="cover-c">
+            <img class="cover-c__img" src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+          </div>
+        </div>
+        <div class="card__title">The Innovators</div>
+        <div class="card__author">Walter Isaacson</div>
+        <div class="card__meta">E-Book · Biografie</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">1 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-c">
+            <img class="cover-c__img" src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+          </div>
+        </div>
+        <div class="card__title">A Room of One's Own</div>
+        <div class="card__author">Virginia Woolf</div>
+        <div class="card__meta">Buch · Literatur</div>
+      </div>
+
+      <div class="card">
+        <div class="card__avail"><span class="dot dot--a"></span><span class="status--a">2 verfügbar</span></div>
+        <div class="card__cover">
+          <div class="cover-c">
+            <img class="cover-c__img" src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+          </div>
+        </div>
+        <div class="card__title">Sapiens</div>
+        <div class="card__author">Yuval Noah Harari</div>
+        <div class="card__meta">Buch · Geschichte</div>
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+</body>
+</html>

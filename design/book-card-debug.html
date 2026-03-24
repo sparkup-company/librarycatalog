@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Card Debug</title>
+  <!-- Exact same CSS load order as the Next.js app uses -->
+  <link rel="stylesheet" href="../catalog/app/globals.css">
+  <style>
+    body { background: #f2f2f7; padding: 40px; display: flex; gap: 20px; align-items: end; }
+
+    /* Simulate results-grid column width */
+    .col { width: 148px; }
+  </style>
+</head>
+<body>
+
+  <!--
+    Exact HTML structure that BookCard.js renders.
+    Replace JSX:
+      <div className="c-book-card">
+        <div className="c-book-card__availability">...</div>
+        <a className="c-book-card__cover" href="#">
+          <img className="c-book-card__cover-bg" src="..." aria-hidden="true" />
+          <div className="c-book-card__cover-frame">
+            <div className="book-card-cover">   ← BookCover renders this
+              <img src="..." />
+            </div>
+          </div>
+        </a>
+        <a className="c-book-card__title">...</a>
+        <div className="c-book-card__author">...</div>
+        <div className="c-book-card__meta">...</div>
+      </div>
+  -->
+
+  <div class="col">
+    <div class="c-book-card">
+      <div class="c-book-card__availability">
+        <span class="c-book-card__dot c-book-card__dot--available"></span>
+        <span class="c-book-card__status--available">3 verfügbar</span>
+      </div>
+      <a class="c-book-card__cover" href="#"
+         style="--cover-url: url('https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg')">
+        <div class="c-book-card__cover-frame">
+          <div class="book-card-cover">
+            <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="Thinking, Fast and Slow">
+          </div>
+        </div>
+      </a>
+      <a class="c-book-card__title" href="#">Thinking, Fast and Slow</a>
+      <div class="c-book-card__author">Daniel Kahneman</div>
+      <div class="c-book-card__meta">Buch · Sachbuch</div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="c-book-card">
+      <div class="c-book-card__availability">
+        <span class="c-book-card__dot c-book-card__dot--borrowed"></span>
+        <span class="c-book-card__status--borrowed">zurück am 31.03.</span>
+      </div>
+      <a class="c-book-card__cover" href="#"
+         style="--cover-url: url('https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg')">
+        <div class="c-book-card__cover-frame">
+          <div class="book-card-cover">
+            <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="The Innovators">
+          </div>
+        </div>
+      </a>
+      <a class="c-book-card__title" href="#">The Innovators</a>
+      <div class="c-book-card__author">Walter Isaacson</div>
+      <div class="c-book-card__meta">E-Book · Biografie</div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="c-book-card">
+      <div class="c-book-card__availability">
+        <span class="c-book-card__dot c-book-card__dot--available"></span>
+        <span class="c-book-card__status--available">1 verfügbar</span>
+      </div>
+      <a class="c-book-card__cover" href="#"
+         style="--cover-url: url('https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg')">
+        <div class="c-book-card__cover-frame">
+          <div class="book-card-cover">
+            <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="A Room of One's Own">
+          </div>
+        </div>
+      </a>
+      <a class="c-book-card__title" href="#">A Room of One's Own</a>
+      <div class="c-book-card__author">Virginia Woolf</div>
+      <div class="c-book-card__meta">Buch · Literatur</div>
+    </div>
+  </div>
+
+</body>
+</html>

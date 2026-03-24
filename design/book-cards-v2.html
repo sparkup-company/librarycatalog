@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buchkachel v2</title>
+
+  <link rel="stylesheet" href="system/tenants/augsburg.css">
+  <link rel="stylesheet" href="system/tokens.css">
+  <link rel="stylesheet" href="system/components.css">
+
+  <style>
+    body { background: #f2f2f7; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 64px 32px 120px; }
+
+    .section { margin-bottom: 88px; }
+    .section__eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.09em;
+      text-transform: uppercase; color: #8e8e93; margin-bottom: 6px;
+    }
+    .section__title {
+      font-family: var(--font-display);
+      font-size: 30px; font-weight: 700; letter-spacing: -0.03em;
+      color: #1c1c1e; margin-bottom: 4px;
+    }
+    .section__desc {
+      font-size: 15px; color: #8e8e93; line-height: 1.5;
+      max-width: 520px; margin-bottom: 32px;
+    }
+    .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
+
+    /* ── Shared like button ── */
+    .like-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: none; border: none; cursor: pointer;
+      color: #aeaeb2;
+      transition: color 0.15s, background 0.15s;
+      flex-shrink: 0;
+    }
+    .like-btn:hover { color: #ff375f; background: rgba(255,55,95,0.08); }
+    .like-btn.on { color: #ff375f; }
+    .like-btn i { display: flex; }
+
+    /* ═══════════════════════════════════════════════════
+       VERSION A — Bookshelf
+       Vertikale Kachel, Cover oben.
+       Alle Infos direkt sichtbar in kompakter Fußzeile.
+    ═══════════════════════════════════════════════════ */
+    .va {
+      width: 154px;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.05);
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.28s ease;
+      cursor: pointer;
+    }
+    .va:hover {
+      transform: translateY(-5px) scale(1.015);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.14), 0 0 0 0.5px rgba(0,0,0,0.05);
+    }
+    .va__cover {
+      width: 154px; height: 220px;
+      display: block; object-fit: cover;
+      background: #e5e5ea;
+    }
+    .va__body { padding: 10px 11px 11px; }
+
+    /* top row: category + mediatype */
+    .va__meta {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .va__cat {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.04em; color: var(--color-action);
+      text-transform: uppercase;
+    }
+    .va__type {
+      display: flex; align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 500; color: #8e8e93;
+    }
+    .va__type i { width: 11px; height: 11px; display: flex; color: #8e8e93; }
+
+    .va__title {
+      font-family: var(--font-display);
+      font-size: 13px; font-weight: 700; color: #1c1c1e;
+      line-height: 1.3; margin-bottom: 2px;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .va__author {
+      font-size: 11px; color: #8e8e93; margin-bottom: 9px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .va__foot {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .va__cta {
+      flex: 1; height: 30px; border-radius: 9px; border: none;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .va__cta:hover { opacity: 0.82; }
+    .va__cta--available { background: var(--color-action); color: #fff; }
+    .va__cta--reserved  { background: #f2f2f7; color: #3c3c43; }
+
+
+    /* ═══════════════════════════════════════════════════
+       VERSION B — Horizontal Row
+       Landscape-Kachel. Cover links, Content rechts.
+       Kompakt und informationsdicht, alles auf einen Blick.
+    ═══════════════════════════════════════════════════ */
+    .vb {
+      width: 340px;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.07), 0 0 0 0.5px rgba(0,0,0,0.05);
+      transition: transform 0.25s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+    .vb:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.05);
+    }
+    .vb__cover {
+      width: 88px; height: 120px;
+      object-fit: cover; flex-shrink: 0;
+      background: #e5e5ea;
+      display: block;
+    }
+    .vb__body {
+      flex: 1; min-width: 0;
+      padding: 12px 13px 11px;
+      display: flex; flex-direction: column;
+    }
+    .vb__top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 4px;
+      margin-bottom: 3px;
+    }
+    .vb__title {
+      font-family: var(--font-display);
+      font-size: 14px; font-weight: 700; color: #1c1c1e;
+      line-height: 1.25; flex: 1;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .vb__author {
+      font-size: 12px; color: #8e8e93; margin-bottom: 8px;
+    }
+    .vb__tags {
+      display: flex; gap: 5px; margin-bottom: auto;
+    }
+    .vb__tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      border-radius: 6px; padding: 3px 7px;
+      font-size: 10px; font-weight: 600; line-height: 1;
+    }
+    .vb__tag i { width: 10px; height: 10px; display: flex; }
+    .vb__tag--cat { background: var(--color-action-surface); color: var(--color-action); }
+    .vb__tag--type { background: #f2f2f7; color: #3c3c43; }
+    .vb__foot {
+      display: flex; align-items: center; gap: 6px;
+      margin-top: 10px;
+    }
+    .vb__cta {
+      flex: 1; height: 30px; border-radius: 9px; border: none;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .vb__cta:hover { opacity: 0.82; }
+    .vb__cta--available { background: var(--color-action); color: #fff; }
+    .vb__cta--reserved  { background: #f2f2f7; color: #3c3c43; }
+
+
+    /* ═══════════════════════════════════════════════════
+       VERSION C — Poster
+       Cover füllt die obere Fläche, unten festes Info-Panel.
+       Kein Overlay, kein Hover-Gate — alles sichtbar.
+    ═══════════════════════════════════════════════════ */
+    .vc {
+      width: 200px;
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.05);
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.28s ease;
+      cursor: pointer;
+    }
+    .vc:hover {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 16px 44px rgba(0,0,0,0.15), 0 0 0 0.5px rgba(0,0,0,0.05);
+    }
+    .vc__cover {
+      width: 200px; height: 240px;
+      object-fit: cover; display: block;
+      background: #e5e5ea;
+    }
+    .vc__panel {
+      padding: 12px 13px 13px;
+    }
+    .vc__row1 {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 7px;
+    }
+    .vc__cat {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--color-action);
+    }
+    .vc__type {
+      display: flex; align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 500; color: #8e8e93;
+    }
+    .vc__type i { width: 11px; height: 11px; display: flex; }
+    .vc__title {
+      font-family: var(--font-display);
+      font-size: 15px; font-weight: 700; color: #1c1c1e;
+      line-height: 1.25; margin-bottom: 2px;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .vc__author {
+      font-size: 12px; color: #8e8e93; margin-bottom: 12px;
+    }
+    .vc__foot {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .vc__cta {
+      flex: 1; height: 36px; border-radius: 11px; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: opacity 0.15s, transform 0.12s;
+    }
+    .vc__cta:active { transform: scale(0.97); }
+    .vc__cta:hover { opacity: 0.84; }
+    .vc__cta--available { background: var(--color-action); color: #fff; }
+    .vc__cta--reserved  { background: #f2f2f7; color: #3c3c43; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+
+  <!-- ═══════════════════════════════════════════════════
+       VERSION A — Bookshelf
+  ═══════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__eyebrow">Version A</div>
+    <div class="section__title">Bookshelf</div>
+    <div class="section__desc">Schmal und hoch. Für dichte Regalansichten — viele Bücher auf einen Blick, alle Informationen direkt lesbar.</div>
+    <div class="row">
+
+      <div class="va">
+        <img class="va__cover" src="https://covers.openlibrary.org/b/isbn/9780062315007-M.jpg" alt="Der Alchemist">
+        <div class="va__body">
+          <div class="va__meta">
+            <span class="va__cat">Fantasy</span>
+            <span class="va__type"><i data-lucide="book-open"></i> Buch</span>
+          </div>
+          <div class="va__title">Der Alchemist</div>
+          <div class="va__author">Paulo Coelho</div>
+          <div class="va__foot">
+            <button class="like-btn" title="Liken"><i data-lucide="heart" width="15" height="15"></i></button>
+            <button class="va__cta va__cta--available">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="va">
+        <img class="va__cover" src="https://covers.openlibrary.org/b/isbn/9780593135204-M.jpg" alt="Project Hail Mary">
+        <div class="va__body">
+          <div class="va__meta">
+            <span class="va__cat">Sci-Fi</span>
+            <span class="va__type"><i data-lucide="tablet"></i> E-Book</span>
+          </div>
+          <div class="va__title">Project Hail Mary</div>
+          <div class="va__author">Andy Weir</div>
+          <div class="va__foot">
+            <button class="like-btn on" title="Liken"><i data-lucide="heart" width="15" height="15"></i></button>
+            <button class="va__cta va__cta--reserved">Vormerken</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="va">
+        <img class="va__cover" src="https://covers.openlibrary.org/b/isbn/9780735211292-M.jpg" alt="Atomic Habits">
+        <div class="va__body">
+          <div class="va__meta">
+            <span class="va__cat">Ratgeber</span>
+            <span class="va__type"><i data-lucide="book-open"></i> Buch</span>
+          </div>
+          <div class="va__title">Atomic Habits</div>
+          <div class="va__author">James Clear</div>
+          <div class="va__foot">
+            <button class="like-btn" title="Liken"><i data-lucide="heart" width="15" height="15"></i></button>
+            <button class="va__cta va__cta--available">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="va">
+        <img class="va__cover" src="https://covers.openlibrary.org/b/isbn/9780441013593-M.jpg" alt="Dune">
+        <div class="va__body">
+          <div class="va__meta">
+            <span class="va__cat">Sci-Fi</span>
+            <span class="va__type"><i data-lucide="book-open"></i> Buch</span>
+          </div>
+          <div class="va__title">Dune</div>
+          <div class="va__author">Frank Herbert</div>
+          <div class="va__foot">
+            <button class="like-btn" title="Liken"><i data-lucide="heart" width="15" height="15"></i></button>
+            <button class="va__cta va__cta--reserved">Vormerken</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="va">
+        <img class="va__cover" src="https://covers.openlibrary.org/b/isbn/9780062464316-M.jpg" alt="Homo Deus">
+        <div class="va__body">
+          <div class="va__meta">
+            <span class="va__cat">Sachbuch</span>
+            <span class="va__type"><i data-lucide="headphones"></i> Hörbuch</span>
+          </div>
+          <div class="va__title">Homo Deus</div>
+          <div class="va__author">Yuval Noah Harari</div>
+          <div class="va__foot">
+            <button class="like-btn on" title="Liken"><i data-lucide="heart" width="15" height="15"></i></button>
+            <button class="va__cta va__cta--available">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="va">
+        <img class="va__cover" src="https://covers.openlibrary.org/b/isbn/9780525559474-M.jpg" alt="The Midnight Library">
+        <div class="va__body">
+          <div class="va__meta">
+            <span class="va__cat">Belletristik</span>
+            <span class="va__type"><i data-lucide="tablet"></i> E-Book</span>
+          </div>
+          <div class="va__title">The Midnight Library</div>
+          <div class="va__author">Matt Haig</div>
+          <div class="va__foot">
+            <button class="like-btn" title="Liken"><i data-lucide="heart" width="15" height="15"></i></button>
+            <button class="va__cta va__cta--reserved">Vormerken</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       VERSION B — Horizontal Row
+  ═══════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__eyebrow">Version B</div>
+    <div class="section__title">Row</div>
+    <div class="section__desc">Horizontal, wie eine Suchergebnisliste. Cover links, Metadaten rechts — auf einem Blick alles lesbar. Gut für längere Listen.</div>
+    <div class="row" style="flex-direction: column; align-items: flex-start;">
+
+      <div class="vb">
+        <img class="vb__cover" src="https://covers.openlibrary.org/b/isbn/9780062315007-M.jpg" alt="Der Alchemist">
+        <div class="vb__body">
+          <div class="vb__top">
+            <div class="vb__title">Der Alchemist</div>
+            <button class="like-btn on" title="Liken" style="margin-top:-2px"><i data-lucide="heart" width="15" height="15"></i></button>
+          </div>
+          <div class="vb__author">Paulo Coelho</div>
+          <div class="vb__tags">
+            <span class="vb__tag vb__tag--cat">Fantasy</span>
+            <span class="vb__tag vb__tag--type"><i data-lucide="book-open"></i>Buch</span>
+          </div>
+          <div class="vb__foot">
+            <button class="vb__cta vb__cta--available">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vb">
+        <img class="vb__cover" src="https://covers.openlibrary.org/b/isbn/9780593135204-M.jpg" alt="Project Hail Mary">
+        <div class="vb__body">
+          <div class="vb__top">
+            <div class="vb__title">Project Hail Mary</div>
+            <button class="like-btn" title="Liken" style="margin-top:-2px"><i data-lucide="heart" width="15" height="15"></i></button>
+          </div>
+          <div class="vb__author">Andy Weir</div>
+          <div class="vb__tags">
+            <span class="vb__tag vb__tag--cat">Sci-Fi</span>
+            <span class="vb__tag vb__tag--type"><i data-lucide="tablet"></i>E-Book</span>
+          </div>
+          <div class="vb__foot">
+            <button class="vb__cta vb__cta--reserved">Vormerken</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vb">
+        <img class="vb__cover" src="https://covers.openlibrary.org/b/isbn/9780735211292-M.jpg" alt="Atomic Habits">
+        <div class="vb__body">
+          <div class="vb__top">
+            <div class="vb__title">Atomic Habits</div>
+            <button class="like-btn" title="Liken" style="margin-top:-2px"><i data-lucide="heart" width="15" height="15"></i></button>
+          </div>
+          <div class="vb__author">James Clear</div>
+          <div class="vb__tags">
+            <span class="vb__tag vb__tag--cat">Ratgeber</span>
+            <span class="vb__tag vb__tag--type"><i data-lucide="book-open"></i>Buch</span>
+          </div>
+          <div class="vb__foot">
+            <button class="vb__cta vb__cta--available">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vb">
+        <img class="vb__cover" src="https://covers.openlibrary.org/b/isbn/9780062464316-M.jpg" alt="Homo Deus">
+        <div class="vb__body">
+          <div class="vb__top">
+            <div class="vb__title">Homo Deus</div>
+            <button class="like-btn on" title="Liken" style="margin-top:-2px"><i data-lucide="heart" width="15" height="15"></i></button>
+          </div>
+          <div class="vb__author">Yuval Noah Harari</div>
+          <div class="vb__tags">
+            <span class="vb__tag vb__tag--cat">Sachbuch</span>
+            <span class="vb__tag vb__tag--type"><i data-lucide="headphones"></i>Hörbuch</span>
+          </div>
+          <div class="vb__foot">
+            <button class="vb__cta vb__cta--reserved">Vormerken</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       VERSION C — Poster
+  ═══════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__eyebrow">Version C</div>
+    <div class="section__title">Poster</div>
+    <div class="section__desc">Cover dominiert, aber das Info-Panel darunter ist immer sichtbar — kein Overlay. Für Empfehlungs- und Featured-Bereiche.</div>
+    <div class="row">
+
+      <div class="vc">
+        <img class="vc__cover" src="https://covers.openlibrary.org/b/isbn/9780062315007-M.jpg" alt="Der Alchemist">
+        <div class="vc__panel">
+          <div class="vc__row1">
+            <span class="vc__cat">Fantasy</span>
+            <span class="vc__type"><i data-lucide="book-open"></i> Buch</span>
+          </div>
+          <div class="vc__title">Der Alchemist</div>
+          <div class="vc__author">Paulo Coelho</div>
+          <div class="vc__foot">
+            <button class="like-btn on" title="Liken"><i data-lucide="heart" width="16" height="16"></i></button>
+            <button class="vc__cta vc__cta--available">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <img class="vc__cover" src="https://covers.openlibrary.org/b/isbn/9780593135204-M.jpg" alt="Project Hail Mary">
+        <div class="vc__panel">
+          <div class="vc__row1">
+            <span class="vc__cat">Sci-Fi</span>
+            <span class="vc__type"><i data-lucide="tablet"></i> E-Book</span>
+          </div>
+          <div class="vc__title">Project Hail Mary</div>
+          <div class="vc__author">Andy Weir</div>
+          <div class="vc__foot">
+            <button class="like-btn" title="Liken"><i data-lucide="heart" width="16" height="16"></i></button>
+            <button class="vc__cta vc__cta--reserved">Vormerken</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <img class="vc__cover" src="https://covers.openlibrary.org/b/isbn/9780735211292-M.jpg" alt="Atomic Habits">
+        <div class="vc__panel">
+          <div class="vc__row1">
+            <span class="vc__cat">Ratgeber</span>
+            <span class="vc__type"><i data-lucide="book-open"></i> Buch</span>
+          </div>
+          <div class="vc__title">Atomic Habits</div>
+          <div class="vc__author">James Clear</div>
+          <div class="vc__foot">
+            <button class="like-btn" title="Liken"><i data-lucide="heart" width="16" height="16"></i></button>
+            <button class="vc__cta vc__cta--available">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <img class="vc__cover" src="https://covers.openlibrary.org/b/isbn/9780441013593-M.jpg" alt="Dune">
+        <div class="vc__panel">
+          <div class="vc__row1">
+            <span class="vc__cat">Sci-Fi</span>
+            <span class="vc__type"><i data-lucide="book-open"></i> Buch</span>
+          </div>
+          <div class="vc__title">Dune</div>
+          <div class="vc__author">Frank Herbert</div>
+          <div class="vc__foot">
+            <button class="like-btn" title="Liken"><i data-lucide="heart" width="16" height="16"></i></button>
+            <button class="vc__cta vc__cta--reserved">Vormerken</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <img class="vc__cover" src="https://covers.openlibrary.org/b/isbn/9780525559474-M.jpg" alt="The Midnight Library">
+        <div class="vc__panel">
+          <div class="vc__row1">
+            <span class="vc__cat">Belletristik</span>
+            <span class="vc__type"><i data-lucide="tablet"></i> E-Book</span>
+          </div>
+          <div class="vc__title">The Midnight Library</div>
+          <div class="vc__author">Matt Haig</div>
+          <div class="vc__foot">
+            <button class="like-btn" title="Liken"><i data-lucide="heart" width="16" height="16"></i></button>
+            <button class="vc__cta vc__cta--available">Ausleihen</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  lucide.createIcons();
+
+  // Like toggle
+  document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      btn.classList.toggle('on');
+    });
+  });
+</script>
+</body>
+</html>

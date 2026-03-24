@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stadtbibliothek Augsburg</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf9f7;
+      --dark: #0a0c10;
+      --blue: #0099ff;
+      --blue-light: #cce7ff;
+      --text: #0a0c10;
+      --muted: #8a9099;
+      --border: #e8e5e0;
+      --font: 'Geist', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(250,249,247,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    .nav.scrolled { border-color: var(--border); }
+    .nav__logo { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+    .nav__logo em { font-style: normal; color: var(--blue); }
+    .nav__links { display: flex; gap: 28px; }
+    .nav__link { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav__link:hover { color: var(--text); }
+    .nav__cta {
+      background: var(--dark); color: #fff;
+      padding: 9px 22px; border-radius: 100px;
+      font: 500 14px/1 var(--font);
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .nav__cta:hover { opacity: 0.75; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 32px 80px;
+      position: relative; overflow: hidden;
+    }
+
+    /* Floating ambient icons */
+    .hero-icons { position: absolute; inset: 0; pointer-events: none; }
+    .hi {
+      position: absolute;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+    .hi:nth-child(1) { width:52px;height:52px;background:#FFCFB4;top:22%;left:11%; animation:fi 6s ease-in-out infinite; }
+    .hi:nth-child(2) { width:44px;height:44px;background:#99CFFF;top:16%;right:16%; animation:fi 7s ease-in-out infinite 1s; }
+    .hi:nth-child(3) { width:56px;height:56px;background:#A8ECC7;top:62%;left:7%;  animation:fi 5.5s ease-in-out infinite 0.5s; }
+    .hi:nth-child(4) { width:40px;height:40px;background:#E4CCFF;top:68%;right:9%; animation:fi 8s ease-in-out infinite 1.5s; }
+    .hi:nth-child(5) { width:48px;height:48px;background:#FFF2BE;top:35%;left:20%; animation:fi 6.5s ease-in-out infinite 2s; }
+    .hi:nth-child(6) { width:46px;height:46px;background:#FFD0D0;top:48%;right:14%;animation:fi 7.5s ease-in-out infinite 0.8s; }
+    @keyframes fi {
+      0%,100% { transform: translateY(0) rotate(-4deg); }
+      50% { transform: translateY(-18px) rotate(4deg); }
+    }
+
+    .hero__badge {
+      background: var(--blue-light); color: var(--blue);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 100px; margin-bottom: 32px;
+    }
+
+    .hero__title {
+      font-size: clamp(52px, 8vw, 100px);
+      font-weight: 900; letter-spacing: -0.04em; line-height: 1.0;
+      margin-bottom: 24px;
+    }
+    .hero__title .line { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.2em; }
+
+    /* Rotating word */
+    .switcher {
+      position: relative;
+      display: inline-block;
+      height: 1.05em;
+      overflow: hidden;
+      vertical-align: bottom;
+      min-width: 3ch; /* will be set by JS */
+    }
+    .switcher__word {
+      display: block;
+      color: var(--blue);
+      position: absolute; top: 0; left: 0; width: 100%;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), opacity 0.55s ease;
+    }
+    .switcher__word.active { opacity: 1; transform: none; position: relative; }
+    .switcher__word.exit  { opacity: 0; transform: translateY(-60px); position: absolute; }
+
+    .hero__desc { font-size: 18px; color: var(--muted); max-width: 440px; line-height: 1.6; margin-bottom: 40px; }
+    .hero__cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--dark); color: #fff;
+      padding: 15px 32px; border-radius: 100px;
+      font: 600 16px var(--font);
+      text-decoration: none; transition: transform 0.2s, opacity 0.2s;
+    }
+    .hero__cta:hover { transform: scale(1.03); opacity: 0.88; }
+
+    /* ─── CLOUD SVG (reused between sections) ─── */
+    .cloud-divider { width: 100%; line-height: 0; display: block; }
+    .cloud-divider svg { width: 100%; display: block; }
+
+    /* ─── HOW SECTION ─── */
+    .how {
+      padding: 80px 40px 100px;
+      max-width: 860px; margin: 0 auto;
+    }
+
+    .how__kicker {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 40px;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .how__kicker.v { opacity: 1; transform: none; }
+
+    .how__title {
+      font-size: clamp(34px, 5vw, 60px);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 1.2;
+    }
+    .how__title .tline { display: block; overflow: hidden; }
+    .how__title .ttext {
+      display: inline;
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .how__title.v .ttext { opacity: 1; transform: none; }
+    .how__title .tline:nth-child(1) .ttext { transition-delay: 0.05s; }
+    .how__title .tline:nth-child(2) .ttext { transition-delay: 0.15s; }
+    .how__title .tline:nth-child(3) .ttext { transition-delay: 0.25s; }
+    .how__title .tline:nth-child(4) .ttext { transition-delay: 0.35s; }
+    .how__title .tline:nth-child(5) .ttext { transition-delay: 0.45s; }
+
+    /* Inline animated icon pills */
+    .ipill {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 54px; height: 54px; border-radius: 16px;
+      font-size: 28px; vertical-align: middle;
+      position: relative; top: -3px; margin: 0 3px;
+    }
+    .ipill:nth-child(odd)  { animation: pp1 4s ease-in-out infinite; }
+    .ipill:nth-child(even) { animation: pp2 4.5s ease-in-out infinite 0.5s; }
+    @keyframes pp1 { 0%,100%{transform:rotate(-6deg) translateY(0)} 50%{transform:rotate(4deg) translateY(-8px)} }
+    @keyframes pp2 { 0%,100%{transform:rotate(5deg) translateY(0)} 50%{transform:rotate(-4deg) translateY(-6px)} }
+
+    /* ─── MOCKUP SECTION ─── */
+    .mockup-wrap {
+      height: 200vh;
+      position: relative;
+    }
+    .mockup-sticky {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; background: #f0f6fc;
+    }
+    .mockup-frame {
+      width: min(880px, 92vw);
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 32px 96px rgba(0,60,120,0.18);
+      opacity: 0;
+      transform: translateY(60px) scale(0.96);
+      transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+    }
+    .mockup-frame.v { opacity: 1; transform: none; }
+
+    /* Mockup UI */
+    .mock-bar {
+      background: #f6fafd; padding: 14px 20px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid #e8eef4;
+    }
+    .mock-bar__dots { display: flex; gap: 7px; }
+    .mock-bar__dot { width: 12px; height: 12px; border-radius: 50%; }
+    .mock-bar__dot:nth-child(1){background:#ff5f57}
+    .mock-bar__dot:nth-child(2){background:#febc2e}
+    .mock-bar__dot:nth-child(3){background:#28c840}
+    .mock-bar__search {
+      flex: 1; background: #eef3f8; border-radius: 8px;
+      height: 32px; max-width: 320px;
+      display: flex; align-items: center; padding: 0 12px;
+      font-size: 12px; color: #8a9099;
+    }
+    .mock-body { display: flex; height: 480px; }
+    .mock-sidebar {
+      width: 200px; flex-shrink: 0;
+      background: #f6fafd; padding: 20px 16px;
+      border-right: 1px solid #e8eef4;
+    }
+    .mock-nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 8px; margin-bottom: 4px;
+      font-size: 13px; font-weight: 500; color: var(--muted);
+    }
+    .mock-nav-item.active { background: var(--blue-light); color: var(--blue); }
+    .mock-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .mock-main { flex: 1; padding: 24px; overflow: hidden; }
+    .mock-greeting { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .mock-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+    .mock-covers {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    }
+    .mock-cover {
+      aspect-ratio: 2/3; border-radius: 8px;
+      transition: transform 0.3s;
+    }
+    .mock-cover:hover { transform: translateY(-4px) scale(1.03); }
+
+    /* ─── WORD SECTIONS (Lesen / Finden / Entdecken) ─── */
+    .word-sect {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .word-sect--white { background: #fff; }
+    .word-sect--cream { background: var(--bg); }
+    .word-sect--dark  { background: var(--dark); color: #fff; }
+
+    .word-sect__kicker {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      opacity: 0.45; margin-bottom: 20px;
+    }
+
+    .giant-word {
+      display: flex; gap: 0.02em;
+      font-size: clamp(72px, 16vw, 190px);
+      font-weight: 900; letter-spacing: -0.04em;
+    }
+    .giant-word .ltr {
+      display: inline-block;
+      opacity: 0; transform: translateY(50px);
+      transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      transition-delay: calc(var(--i) * 0.06s);
+    }
+    .word-sect.v .ltr { opacity: 1; transform: none; }
+
+    .word-sect__desc {
+      font-size: clamp(15px, 2vw, 20px);
+      max-width: 520px; text-align: center; line-height: 1.65;
+      margin-top: 32px;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s 0.5s, transform 0.7s 0.5s;
+    }
+    .word-sect.v .word-sect__desc { opacity: 1; transform: none; }
+
+    .word-sect__cloud { position: absolute; bottom: -1px; left: 0; right: 0; line-height: 0; }
+    .word-sect__cloud svg { width: 100%; display: block; }
+
+    /* small floating icons in word sections */
+    .wsicons { position: absolute; inset: 0; pointer-events: none; }
+    .wsicon {
+      position: absolute; border-radius: 12px;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+
+    /* ─── GALLERY SECTION ─── */
+    .gallery-sect { padding: 100px 0 60px; background: var(--bg); }
+    .gallery-sect__head { padding: 0 48px; margin-bottom: 44px; }
+    .gallery-sect__title {
+      font-size: clamp(30px, 4vw, 50px); font-weight: 900; letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+    .gallery-sect__desc { font-size: 17px; color: var(--muted); }
+
+    .gallery-track {
+      display: flex; gap: 14px; padding: 0 48px 20px;
+      overflow-x: auto; cursor: grab;
+      -ms-overflow-style: none; scrollbar-width: none;
+    }
+    .gallery-track::-webkit-scrollbar { display: none; }
+    .gallery-track.dragging { cursor: grabbing; user-select: none; }
+
+    .genre-card {
+      flex: 0 0 240px; height: 320px; border-radius: 20px;
+      position: relative; overflow: hidden; cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .genre-card:hover { transform: scale(1.03); }
+    .genre-card__bg {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 72px;
+    }
+    .genre-card__over {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+    }
+    .genre-card__info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 18px 20px;
+      transform: translateY(44px); transition: transform 0.35s ease;
+    }
+    .genre-card:hover .genre-card__info { transform: none; }
+    .genre-card__name { font-size: 19px; font-weight: 700; color: #fff; }
+    .genre-card__count { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+
+    .gallery-hint {
+      padding: 16px 48px 0;
+      min-height: 24px; font-size: 15px; color: var(--muted);
+      transition: opacity 0.3s;
+    }
+
+    /* ─── FEATURES SECTION ─── */
+    .features-sect { padding: 80px 40px 100px; max-width: 1100px; margin: 0 auto; }
+    .features-head { text-align: center; margin-bottom: 60px; }
+    .features-head__title {
+      font-size: clamp(30px, 4vw, 50px); font-weight: 900; letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+    .features-head__desc { font-size: 17px; color: var(--muted); }
+
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    @media(max-width:768px){ .features-grid{grid-template-columns:1fr;} }
+
+    .feat-card {
+      background: #fff; border-radius: 22px; border: 1px solid var(--border);
+      padding: 32px; min-height: 420px;
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+    }
+
+    .feat-card__title {
+      font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.3;
+      margin-bottom: 28px;
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .feat-card__title--alt {
+      position: absolute; top: 32px; left: 32px; right: 32px;
+      font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.3;
+      color: var(--blue);
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .feat-card.alt .feat-card__title { opacity: 0; transform: translateY(-18px); }
+    .feat-card.alt .feat-card__title--alt { opacity: 1; transform: none; }
+
+    .feat-card__visual { flex: 1; display: flex; align-items: center; justify-content: center; }
+
+    /* Visual: Reserve – animated book shelf */
+    .shelf { display: flex; align-items: flex-end; gap: 10px; }
+    .bk {
+      width: 38px; border-radius: 4px 6px 6px 4px;
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+    }
+    .bk::after {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 5px; height: 100%;
+      background: rgba(255,255,255,0.25); border-radius: 4px 0 0 4px;
+    }
+    .feat-card[data-card="reserve"].alt .bk:nth-child(3) { transform: translateY(-28px); }
+    .shelf-base { width: 260px; height: 8px; background: #e8e5e0; border-radius: 4px; margin-top: 0; }
+
+    /* Visual: Groups – avatar cluster */
+    .avatars-vis { display: flex; flex-direction: column; gap: 12px; width: 220px; }
+    .avatar-row { display: flex; align-items: center; gap: -8px; }
+    .av {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 3px solid #fff; margin-left: -10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .av:first-child { margin-left: 0; }
+    .av-label { margin-left: 12px; font-size: 13px; color: var(--muted); }
+    .av-bubble {
+      background: #f0f6fc; border-radius: 12px; padding: 10px 14px;
+      font-size: 13px; line-height: 1.5; color: var(--text);
+      border: 1px solid var(--blue-light);
+    }
+
+    /* Visual: Search enhance animation */
+    .enhance-vis {
+      width: 100%; max-width: 280px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .ev-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+    }
+    .ev-label__dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+    }
+    .ev-label.spinning .ev-label__dot { animation: spin 1.5s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ev-words { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ev-word {
+      background: #eef3f8; border-radius: 6px;
+      padding: 5px 10px; font-size: 13px;
+      transition: all 0.4s ease;
+    }
+    .ev-word.new {
+      background: var(--blue-light); color: var(--blue);
+      animation: wordIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes wordIn { from { opacity:0; transform: scale(0.7) translateY(8px); } to { opacity:1; transform: none; } }
+
+    /* ─── CTA SECTION ─── */
+    .cta-sect {
+      background: var(--dark); color: #fff;
+      padding: 120px 32px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-sect__bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 60% 50% at 50% 100%, #0047aa22, transparent);
+    }
+    .cta-title {
+      font-size: clamp(40px, 6vw, 76px);
+      font-weight: 900; letter-spacing: -0.04em; line-height: 1.05;
+      margin-bottom: 20px; position: relative;
+    }
+    .cta-desc { font-size: 18px; opacity: 0.55; margin-bottom: 44px; position: relative; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: var(--dark);
+      padding: 16px 36px; border-radius: 100px;
+      font: 700 16px var(--font);
+      text-decoration: none; position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover { transform: scale(1.04); box-shadow: 0 8px 32px rgba(255,255,255,0.2); }
+
+    /* ─── Scroll reveal base ─── */
+    .sr { opacity: 0; transform: translateY(28px); transition: opacity 0.65s, transform 0.65s; }
+    .sr.v { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav__logo">Stadt<em>bibliothek</em> Augsburg</div>
+  <div class="nav__links">
+    <a href="#how" class="nav__link">So funktioniert's</a>
+    <a href="#genres" class="nav__link">Genres</a>
+    <a href="#features" class="nav__link">Features</a>
+  </div>
+  <a href="#" class="nav__cta">Anmelden</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-icons">
+    <div class="hi">📖</div>
+    <div class="hi">✨</div>
+    <div class="hi">🎧</div>
+    <div class="hi">🎬</div>
+    <div class="hi">🗞️</div>
+    <div class="hi">🎮</div>
+  </div>
+
+  <div class="hero__badge">Stadtbibliothek Augsburg · Digitaler Katalog</div>
+
+  <h1 class="hero__title" id="hero-title">
+    <span class="line">
+      <span class="switcher" id="switcher">
+        <span class="switcher__word active">Bücher</span>
+        <span class="switcher__word">Medien</span>
+        <span class="switcher__word">Welten</span>
+      </span>
+      <span>&nbsp;müssen nicht</span>
+    </span>
+    <span class="line" style="color:var(--muted)">von vorne anfangen.</span>
+  </h1>
+
+  <p class="hero__desc">Deine Bibliothek kennt deinen Geschmack – und findet die richtigen Bücher genau für dich.</p>
+  <a href="#" class="hero__cta">Jetzt entdecken ↗</a>
+</section>
+
+<!-- HOW SECTION -->
+<div class="cloud-divider" aria-hidden="true">
+  <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1440 80H0V48C0 48 240 0 480 0C600 0 660 18 720 30C780 42 840 56 960 56C1120 56 1300 20 1440 0V80Z" fill="white"/>
+  </svg>
+</div>
+
+<section class="how" id="how">
+  <div class="how__kicker" data-sr="how-kicker">Mit deinem Geschmack. Nicht von Null.</div>
+  <h2 class="how__title" data-sr="how-title">
+    <span class="tline"><span class="ttext">Die Bibliothek lernt dein</span>
+      <span class="ipill" style="background:#FFCFB4">📚</span>
+      <span class="ttext">Leseinteresse,</span>
+    </span>
+    <span class="tline"><span class="ttext">dein</span>
+      <span class="ipill" style="background:#99CFFF">🎨</span>
+      <span class="ttext">Lieblingsgenre,</span>
+      <span class="ipill" style="background:#A8ECC7">🎵</span>
+      <span class="ttext">deine Stimmung,</span>
+    </span>
+    <span class="tline"><span class="ttext">und zeigt dir dann die</span>
+      <span class="ipill" style="background:#E4CCFF">⭐</span>
+      <span class="ttext">richtigen</span>
+    </span>
+    <span class="tline">
+      <span class="ipill" style="background:#FFF2BE">✨</span>
+      <span class="ttext">Bücher für dich.</span>
+    </span>
+  </h2>
+</section>
+
+<!-- MOCKUP -->
+<section class="mockup-wrap" id="mockup-wrap">
+  <div class="mockup-sticky">
+    <div class="mockup-frame" id="mockup-frame">
+      <div class="mock-bar">
+        <div class="mock-bar__dots">
+          <div class="mock-bar__dot"></div>
+          <div class="mock-bar__dot"></div>
+          <div class="mock-bar__dot"></div>
+        </div>
+        <div class="mock-bar__search">🔍 &nbsp;Roman, Thriller, Kinderbuch …</div>
+      </div>
+      <div class="mock-body">
+        <nav class="mock-sidebar">
+          <div class="mock-nav-item active"><span class="mock-nav-dot"></span> Für dich</div>
+          <div class="mock-nav-item"><span class="mock-nav-dot"></span> Stöbern</div>
+          <div class="mock-nav-item"><span class="mock-nav-dot"></span> Ausgeliehen</div>
+          <div class="mock-nav-item"><span class="mock-nav-dot"></span> Merkliste</div>
+          <div class="mock-nav-item"><span class="mock-nav-dot"></span> Veranstaltungen</div>
+        </nav>
+        <div class="mock-main">
+          <div class="mock-greeting">Guten Morgen, Thomas 👋</div>
+          <div class="mock-sub">3 ausgeliehen · 1 fällig in 4 Tagen · 5 neue Empfehlungen</div>
+          <div class="mock-covers" id="mock-covers"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORD SECTION 1: LESEN -->
+<section class="word-sect word-sect--white" data-word>
+  <div class="wsicons">
+    <div class="wsicon" style="background:#FFCFB4;top:18%;left:8%;animation:fi 6s ease-in-out infinite">📖</div>
+    <div class="wsicon" style="background:#99CFFF;bottom:22%;right:9%;animation:fi 7s ease-in-out infinite 1s">🔖</div>
+  </div>
+  <span class="word-sect__kicker">Schritt 1</span>
+  <div class="giant-word">
+    <span class="ltr" style="--i:0">L</span>
+    <span class="ltr" style="--i:1">E</span>
+    <span class="ltr" style="--i:2">S</span>
+    <span class="ltr" style="--i:3">E</span>
+    <span class="ltr" style="--i:4">N</span>
+  </div>
+  <p class="word-sect__desc">Entleih digital oder vor Ort – über 180.000 Medien stehen dir zur Verfügung. Ebooks, Hörbücher, Zeitschriften, Spiele.</p>
+  <div class="word-sect__cloud">
+    <svg viewBox="0 0 1440 90" fill="none"><path d="M0 90V52C160 20 320 0 480 0C600 0 680 22 720 38C760 54 840 72 960 72C1120 72 1300 36 1440 12V90H0Z" fill="#faf9f7"/></svg>
+  </div>
+</section>
+
+<!-- WORD SECTION 2: FINDEN -->
+<section class="word-sect word-sect--cream" data-word>
+  <div class="wsicons">
+    <div class="wsicon" style="background:#A8ECC7;top:20%;right:10%;animation:fi 5.5s ease-in-out infinite 0.5s">🔍</div>
+    <div class="wsicon" style="background:#E4CCFF;bottom:25%;left:8%;animation:fi 8s ease-in-out infinite 1.5s">✨</div>
+  </div>
+  <span class="word-sect__kicker">Schritt 2</span>
+  <div class="giant-word" style="color:var(--blue)">
+    <span class="ltr" style="--i:0">F</span>
+    <span class="ltr" style="--i:1">I</span>
+    <span class="ltr" style="--i:2">N</span>
+    <span class="ltr" style="--i:3">D</span>
+    <span class="ltr" style="--i:4">E</span>
+    <span class="ltr" style="--i:5">N</span>
+  </div>
+  <p class="word-sect__desc">Lass die Bibliothek für dich suchen. Personalisierte Empfehlungen auf Basis deiner Lesehistorie – ohne deine Daten zu verkaufen.</p>
+  <div class="word-sect__cloud">
+    <svg viewBox="0 0 1440 90" fill="none"><path d="M0 90V58C200 16 400 0 560 0C680 0 760 28 840 44C920 60 1000 72 1160 72C1280 72 1380 44 1440 24V90H0Z" fill="#0a0c10"/></svg>
+  </div>
+</section>
+
+<!-- WORD SECTION 3: ERLEBEN -->
+<section class="word-sect word-sect--dark" data-word>
+  <div class="wsicons">
+    <div class="wsicon" style="background:#1a2540;top:15%;left:10%;animation:fi 7s ease-in-out infinite">🌙</div>
+    <div class="wsicon" style="background:#1a2540;bottom:20%;right:8%;animation:fi 6s ease-in-out infinite 1s">🎭</div>
+  </div>
+  <span class="word-sect__kicker" style="color:rgba(255,255,255,0.4)">Schritt 3</span>
+  <div class="giant-word" style="color:#fff">
+    <span class="ltr" style="--i:0">E</span>
+    <span class="ltr" style="--i:1">R</span>
+    <span class="ltr" style="--i:2">L</span>
+    <span class="ltr" style="--i:3">E</span>
+    <span class="ltr" style="--i:4">B</span>
+    <span class="ltr" style="--i:5">E</span>
+    <span class="ltr" style="--i:6">N</span>
+  </div>
+  <p class="word-sect__desc" style="color:rgba(255,255,255,0.55)">Lesezirkel, Autorenlesungen, Workshops. Deine Bibliothek ist mehr als ein Ort – sie ist eine Gemeinschaft.</p>
+  <div class="word-sect__cloud">
+    <svg viewBox="0 0 1440 90" fill="none"><path d="M0 90V44C240 10 480 0 660 0C800 0 900 30 980 50C1060 70 1160 80 1320 60C1360 54 1400 44 1440 36V90H0Z" fill="#faf9f7"/></svg>
+  </div>
+</section>
+
+<!-- GALLERY SECTION -->
+<section class="gallery-sect" id="genres">
+  <div class="gallery-sect__head sr" data-sr>
+    <div class="gallery-sect__title">Wähle dein Genre.</div>
+    <div class="gallery-sect__desc">Hover für mehr – tippe und blättere durch über 40 Kategorien.</div>
+  </div>
+  <div class="gallery-track" id="gallery-track"></div>
+  <div class="gallery-hint" id="gallery-hint">Hover to reveal more information</div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features-sect" id="features">
+  <div class="features-head sr" data-sr>
+    <div class="features-head__title">Noch mehr</div>
+    <div class="features-head__desc">Alles, was dein Leseerlebnis komplett macht.</div>
+  </div>
+  <div class="features-grid">
+
+    <!-- Card 1: Reserve -->
+    <div class="feat-card" data-card="reserve" data-threshold="0.65">
+      <div class="feat-card__title">Medien<br>reservieren<br>per Klick</div>
+      <div class="feat-card__title--alt">… und direkt<br>am Schalter<br>abholen</div>
+      <div class="feat-card__visual">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+          <div class="shelf" id="shelf-books"></div>
+          <div class="shelf-base"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Reading groups -->
+    <div class="feat-card" data-card="groups" data-threshold="0.55">
+      <div class="feat-card__title">Lesezirkel<br>gründen &amp;<br>teilen</div>
+      <div class="feat-card__title--alt">Live-Feedback<br>mit anderen<br>Lesenden</div>
+      <div class="feat-card__visual">
+        <div class="avatars-vis">
+          <div class="avatar-row">
+            <div class="av" style="background:#4f8ef7">T</div>
+            <div class="av" style="background:#f74f6e">A</div>
+            <div class="av" style="background:#f7a04f">M</div>
+            <div class="av" style="background:#4fdbf7">+3</div>
+            <span class="av-label">Lesezirkel Augsburg</span>
+          </div>
+          <div class="av-bubble">"Der zweite Teil ist noch besser! Wer ist schon bei Kapitel 12?"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Search enhance -->
+    <div class="feat-card" data-card="enhance" data-threshold="0.55">
+      <div class="feat-card__title">Suche<br>verfeinern<br>lassen</div>
+      <div class="feat-card__title--alt">Präzisere<br>Treffer mit<br>einem Klick</div>
+      <div class="feat-card__visual">
+        <div class="enhance-vis" id="ev">
+          <div class="ev-label" id="ev-label" style="color:var(--muted)">
+            <div class="ev-label__dot" style="background:#eef3f8">⏳</div>
+            <span>Suche wird verfeinert</span>
+          </div>
+          <div class="ev-words" id="ev-words">
+            <span class="ev-word">Krimi</span>
+            <span class="ev-word">kurz</span>
+            <span class="ev-word">spannend</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sect">
+  <div class="cta-sect__bg"></div>
+  <h2 class="cta-title">Deine Bibliothek.<br>Neu entdeckt.</h2>
+  <p class="cta-desc">Kostenlos anmelden. 180.000 Medien. Immer geöffnet.</p>
+  <a href="#" class="cta-btn">Jetzt kostenlos starten ↗</a>
+</section>
+
+<script>
+// ─── Helpers ────────────────────────────────────────────────────────────────
+const $ = (sel, ctx=document) => ctx.querySelector(sel);
+const $$ = (sel, ctx=document) => [...ctx.querySelectorAll(sel)];
+
+function observe(el, cb, options={}) {
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => cb(e, observer));
+    var observer;
+  }, options).observe(el);
+}
+
+// ─── Nav scroll ─────────────────────────────────────────────────────────────
+const nav = $('#nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+
+// ─── Hero: Rotating switcher ─────────────────────────────────────────────
+(function() {
+  const words = $$('.switcher__word', $('#switcher'));
+  const container = $('#switcher');
+  let cur = 0;
+
+  function measure() {
+    let max = 0;
+    words.forEach(w => {
+      const prev = w.style.position;
+      w.style.position = 'absolute';
+      max = Math.max(max, w.offsetWidth);
+      w.style.position = prev;
+    });
+    container.style.width = max + 'px';
+  }
+  measure();
+
+  function next() {
+    const prev = words[cur];
+    cur = (cur + 1) % words.length;
+    const nxt = words[cur];
+
+    prev.classList.add('exit');
+    prev.classList.remove('active');
+    nxt.classList.add('active');
+
+    setTimeout(() => { prev.classList.remove('exit'); }, 600);
+  }
+  setInterval(next, 2800);
+})();
+
+// ─── Mockup cover grid ───────────────────────────────────────────────────
+(function() {
+  const colors = [
+    '#FFD6B4','#B4D6FF','#B4FFD6','#E4B4FF','#FFB4B4',
+    '#FFF2B4','#B4FFFF','#FFB4E4','#D6FFB4','#C8B4FF'
+  ];
+  const grid = $('#mock-covers');
+  colors.forEach((c, i) => {
+    const el = document.createElement('div');
+    el.className = 'mock-cover';
+    el.style.cssText = `background:${c};animation:fi ${5+i%3}s ease-in-out infinite ${i*0.3}s`;
+    grid.appendChild(el);
+  });
+})();
+
+// ─── Mockup reveal (sticky scroll) ───────────────────────────────────────
+(function() {
+  const frame = $('#mockup-frame');
+  const wrap  = $('#mockup-wrap');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.intersectionRatio > 0.1) frame.classList.add('v');
+    });
+  }, { threshold: 0.1 });
+  io.observe(wrap);
+})();
+
+// ─── Scroll reveal: how section ──────────────────────────────────────────
+(function() {
+  const kicker = $('.how__kicker');
+  const title  = $('.how__title');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        kicker.classList.add('v');
+        title.classList.add('v');
+      }
+    });
+  }, { threshold: 0.2 });
+  if (kicker) io.observe(kicker);
+})();
+
+// ─── Word sections ───────────────────────────────────────────────────────
+$$('[data-word]').forEach(sect => {
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.intersectionRatio > 0.3) sect.classList.add('v');
+      else sect.classList.remove('v');
+    });
+  }, { threshold: 0.3 }).observe(sect);
+});
+
+// ─── Generic scroll reveal (.sr) ─────────────────────────────────────────
+$$('.sr').forEach(el => {
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) el.classList.add('v'); });
+  }, { threshold: 0.15 }).observe(el);
+});
+
+// ─── Genre gallery ───────────────────────────────────────────────────────
+(function() {
+  const genres = [
+    { name: 'Krimi & Thriller', count: '12.340 Titel', emoji: '🔍', bg: '#1a1a2e', fg: '#e4ccff' },
+    { name: 'Romane',           count: '28.150 Titel', emoji: '📖', bg: '#2e1a1a', fg: '#ffcfb4' },
+    { name: 'Science Fiction',  count: '8.920 Titel',  emoji: '🚀', bg: '#1a2e2e', fg: '#a8ecc7' },
+    { name: 'Kinder & Jugend',  count: '21.500 Titel', emoji: '🌈', bg: '#2e2a1a', fg: '#fff2be' },
+    { name: 'Sachbuch',         count: '18.730 Titel', emoji: '🔬', bg: '#1a2e1a', fg: '#99cfff' },
+    { name: 'Biografie',        count: '6.440 Titel',  emoji: '🧑‍🎤', bg: '#2a1a2e', fg: '#ffd0d0' },
+    { name: 'Hörbuch',          count: '14.200 Titel', emoji: '🎧', bg: '#1a1a1a', fg: '#e8e8e8' },
+    { name: 'Comics & Manga',   count: '5.670 Titel',  emoji: '🎨', bg: '#2e2e1a', fg: '#ffcfb4' },
+    { name: 'Reise',            count: '3.880 Titel',  emoji: '🌍', bg: '#1a2a2e', fg: '#a8ecc7' },
+    { name: 'Philosophie',      count: '4.210 Titel',  emoji: '🧠', bg: '#1e1e2e', fg: '#c8b4ff' },
+  ];
+
+  const track = $('#gallery-track');
+  const hint  = $('#gallery-hint');
+
+  genres.forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'genre-card';
+    card.innerHTML = `
+      <div class="genre-card__bg" style="background:${g.bg};color:${g.fg}">${g.emoji}</div>
+      <div class="genre-card__over"></div>
+      <div class="genre-card__info">
+        <div class="genre-card__name">${g.name}</div>
+        <div class="genre-card__count">${g.count}</div>
+      </div>`;
+    card.addEventListener('mouseenter', () => { hint.textContent = `${g.name} — ${g.count}`; });
+    card.addEventListener('mouseleave', () => { hint.textContent = 'Hover to reveal more information'; });
+    track.appendChild(card);
+  });
+
+  // Drag to scroll
+  let isDown = false, startX, scrollLeft;
+  track.addEventListener('mousedown', e => {
+    isDown = true; track.classList.add('dragging');
+    startX = e.pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+  });
+  document.addEventListener('mouseup', () => { isDown = false; track.classList.remove('dragging'); });
+  track.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - track.offsetLeft;
+    track.scrollLeft = scrollLeft - (x - startX) * 1.5;
+  });
+})();
+
+// ─── Book shelf visual ────────────────────────────────────────────────────
+(function() {
+  const shelf = $('#shelf-books');
+  const books = [
+    {h:90,c:'#4f8ef7'},{h:110,c:'#f74f6e'},{h:100,c:'#4fdbf7'},
+    {h:80,c:'#f7a04f'},{h:95,c:'#a04ff7'},{h:105,c:'#4ff77c'},
+  ];
+  books.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'bk';
+    el.style.cssText = `height:${b.h}px;background:${b.c}`;
+    shelf.appendChild(el);
+  });
+})();
+
+// ─── Feature cards: threshold flip ────────────────────────────────────────
+$$('[data-threshold]').forEach(card => {
+  const t = parseFloat(card.dataset.threshold);
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      card.classList.toggle('alt', e.intersectionRatio >= t);
+    });
+  }, { threshold: [0, t] }).observe(card);
+});
+
+// ─── Search enhance animation ─────────────────────────────────────────────
+(function() {
+  const card = $('[data-card="enhance"]');
+  const label = $('#ev-label');
+  const words = $('#ev-words');
+  let done = false;
+
+  const enhanced = ['Kurzkrimi', 'atmosphärisch', 'packend', 'unter 300 Seiten', 'auf Lager'];
+
+  function runAnimation() {
+    if (done) return;
+    done = true;
+
+    // Show spinner
+    label.innerHTML = '<div class="ev-label__dot spinning" style="background:#fef2be">✦</div><span style="color:var(--text);font-weight:600">Suche wird verfeinert …</span>';
+
+    setTimeout(() => {
+      // Add enhanced words one by one
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i >= enhanced.length) {
+          clearInterval(interval);
+          label.innerHTML = '<div class="ev-label__dot" style="background:#a8ecc7">✓</div><span style="color:#19b361;font-weight:600">Fertig</span>';
+          return;
+        }
+        const span = document.createElement('span');
+        span.className = 'ev-word new';
+        span.textContent = enhanced[i];
+        words.appendChild(span);
+        i++;
+      }, 350);
+    }, 1200);
+  }
+
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting && !done) runAnimation(); });
+  }, { threshold: 0.5 }).observe(card);
+})();
+</script>
+
+</body>
+</html>

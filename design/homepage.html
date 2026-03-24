@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stadtbibliothek Augsburg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white: #faf7f2;
+    --surface: #ffffff;
+    --dark: #0d0b14;
+    --dark-mid: #1a1625;
+    --text: #0f0d14;
+    --text-mid: #6b6478;
+    --text-muted: #a89fba;
+    --border: #e8e3dc;
+    --primary: #e05a00;
+    --primary-light: #fde8d4;
+    --primary-glow: rgba(224, 90, 0, 0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── TOP NAV ─── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 64px;
+    background: rgba(250, 247, 242, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 0;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .nav-logo-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .nav-logo-mark svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+  }
+
+  .nav-logo-text {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .nav-logo-text span {
+    display: block;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--text-mid);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 auto;
+  }
+
+  .nav-link {
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-mid);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+    position: relative;
+  }
+
+  .nav-link:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+
+  .nav-link.active {
+    color: var(--primary);
+  }
+
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -21px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 2px;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .nav-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e05a00, #ff8c42);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .nav-avatar:hover { transform: scale(1.05); }
+
+  /* ─── PRESENCE BAR ─── */
+  .presence-bar {
+    height: 48px;
+    background: #f7f6f4;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 12px;
+  }
+
+  .presence-label {
+    font-size: 13px;
+    color: var(--text-mid);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .presence-avatars {
+    display: flex;
+    align-items: center;
+    gap: -4px;
+  }
+
+  .presence-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #f7f6f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    margin-left: -6px;
+    animation: avatarPulse 3s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  .presence-avatar:first-child { margin-left: 0; }
+
+  .presence-avatar:nth-child(1) { background: #7c3aed; animation-delay: 0s; }
+  .presence-avatar:nth-child(2) { background: #0d9488; animation-delay: 0.5s; }
+  .presence-avatar:nth-child(3) { background: #ea580c; animation-delay: 1s; }
+  .presence-avatar:nth-child(4) { background: #2563eb; animation-delay: 1.5s; }
+  .presence-avatar:nth-child(5) { background: #db2777; animation-delay: 2s; }
+  .presence-avatar:nth-child(6) { background: #65a30d; animation-delay: 2.5s; }
+
+  @keyframes avatarPulse {
+    0%, 100% { box-shadow: 0 0 0 0 transparent; }
+    50% { box-shadow: 0 0 0 3px rgba(255,255,255,0.4); }
+  }
+
+  .presence-more {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: var(--white);
+    padding: 80px 64px 96px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #fde8d4 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, #fde8d4 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero-headline {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 76px;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 24px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-headline .scribble-word {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero-headline .scribble-word svg {
+    position: absolute;
+    bottom: -8px;
+    left: -4px;
+    width: calc(100% + 8px);
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .hero-sub {
+    font-size: 19px;
+    color: var(--text-mid);
+    line-height: 1.55;
+    max-width: 480px;
+    margin: 0 auto 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-search-wrap {
+    position: relative;
+    max-width: 560px;
+    margin: 0 auto;
+    z-index: 1;
+  }
+
+  .hero-search {
+    width: 100%;
+    height: 60px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 9999px;
+    padding: 0 24px 0 56px;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+
+  .hero-search:focus {
+    border-color: var(--primary);
+    box-shadow: 0 4px 24px rgba(224,90,0,0.15);
+  }
+
+  .hero-search::placeholder { color: var(--text-muted); }
+
+  .hero-search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+  }
+
+  .hero-search-annotation {
+    position: absolute;
+    right: -140px;
+    top: -12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .hero-annotation-text {
+    font-family: 'Kalam', cursive;
+    font-size: 14px;
+    color: var(--primary);
+    transform: rotate(-8deg);
+    transform-origin: left center;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+
+  .hero-annotation-arrow {
+    margin-left: 8px;
+    margin-top: 2px;
+  }
+
+  /* ─── SECTION COMMON ─── */
+  .section {
+    padding: 72px 64px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .section-title {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--text);
+  }
+
+  .section-annotation {
+    font-family: 'Kalam', cursive;
+    font-size: 14px;
+    color: var(--primary);
+    transform: rotate(-3deg);
+    display: inline-block;
+    margin-left: 4px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 9999px;
+  }
+
+  .badge-live {
+    background: #fde8d4;
+    color: var(--primary);
+  }
+
+  .badge-live::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  /* ─── SHELF (HORIZONTAL SCROLL) ─── */
+  .shelf-outer {
+    position: relative;
+  }
+
+  .shelf-outer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 100%;
+    background: linear-gradient(to right, transparent, var(--surface));
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .shelf-outer.on-white::after {
+    background: linear-gradient(to right, transparent, #ffffff);
+  }
+
+  .shelf {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .shelf::-webkit-scrollbar { display: none; }
+
+  /* ─── BOOK COVER ─── */
+  .book-cover {
+    flex-shrink: 0;
+    width: 140px;
+    height: 210px;
+    border-radius: 6px;
+    overflow: visible;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .book-cover:hover { transform: translateY(-8px) scale(1.03); }
+
+  .book-cover-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 14px 12px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .book-cover-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+    border-radius: 6px;
+  }
+
+  .book-title {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: white;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  }
+
+  .book-author {
+    font-size: 10px;
+    color: rgba(255,255,255,0.75);
+    margin-top: 2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Presence ring on cover */
+  .book-cover.has-presence .book-cover-inner {
+    outline: 3px solid var(--presence-color, #7c3aed);
+    outline-offset: 0;
+  }
+
+  .presence-chip {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 9999px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .presence-chip-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ─── COMMUNITY SHELF SECTION ─── */
+  .community-section {
+    background: #ffffff;
+    padding: 72px 64px;
+  }
+
+  /* ─── MEDIA TABS ─── */
+  .media-tabs-section {
+    background: var(--white);
+    padding: 64px 64px 0;
+  }
+
+  .media-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .media-tab {
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-mid);
+  }
+
+  .media-tab:hover {
+    border-color: var(--text-muted);
+    color: var(--text);
+  }
+
+  .media-tab.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  .media-shelf-section {
+    background: var(--white);
+    padding: 0 64px 72px;
+  }
+
+  .media-shelf-section .shelf-outer::after {
+    background: linear-gradient(to right, transparent, var(--white));
+  }
+
+  /* ─── LIBRARIAN RECOMMENDATIONS ─── */
+  .librarian-section {
+    background: #ffffff;
+    padding: 72px 64px;
+  }
+
+  .librarian-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    margin-bottom: 36px;
+  }
+
+  .librarian-title {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--text);
+  }
+
+  .librarian-annotation {
+    font-family: 'Kalam', cursive;
+    font-size: 14px;
+    color: var(--primary);
+    transform: rotate(-4deg);
+    display: inline-block;
+    margin-left: 16px;
+  }
+
+  .rec-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .rec-card {
+    background: #fffdf9;
+    border: 1px solid #ede8e0;
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    gap: 20px;
+    box-shadow: 4px 4px 0 #ede8e0, 0 8px 24px rgba(0,0,0,0.04);
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .rec-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 6px 0 #ede8e0, 0 12px 32px rgba(0,0,0,0.07);
+  }
+
+  .rec-cover-wrap {
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .rec-cover {
+    width: 80px;
+    height: 120px;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0,0,0,0.2);
+    transform: rotate(-2deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 8px 7px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .rec-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%);
+  }
+
+  .rec-cover .book-title {
+    font-size: 10px;
+  }
+
+  .rec-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .rec-quote {
+    font-family: 'Kalam', cursive;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .rec-quote::before {
+    content: '"';
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--primary-light);
+    position: absolute;
+    left: -8px;
+    top: -8px;
+  }
+
+  .rec-librarian {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .rec-librarian-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .rec-librarian-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .rec-librarian-role {
+    font-size: 11px;
+    color: var(--text-muted);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .rec-librarian-role svg {
+    position: absolute;
+    left: -6px;
+    top: -4px;
+    pointer-events: none;
+  }
+
+  .rec-librarian-role-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── DARK FEATURE SECTION ─── */
+  .dark-section {
+    background: var(--dark);
+    padding: 96px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark-section-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .dark-book-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dark-glow {
+    position: absolute;
+    width: 260px;
+    height: 360px;
+    border-radius: 8px;
+    filter: blur(80px);
+    opacity: 0.45;
+    z-index: 0;
+    animation: glowBreath 4s ease-in-out infinite;
+  }
+
+  @keyframes glowBreath {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(1.05); }
+  }
+
+  .dark-cover {
+    width: 220px;
+    height: 330px;
+    border-radius: 10px;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px 18px;
+    overflow: hidden;
+    animation: coverFloat 6s ease-in-out infinite;
+  }
+
+  @keyframes coverFloat {
+    0%, 100% { transform: translateY(0px) rotate(-1deg); }
+    50% { transform: translateY(-10px) rotate(-1deg); }
+  }
+
+  .dark-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+  }
+
+  .dark-cover .book-title {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .dark-cover .book-author {
+    font-size: 12px;
+  }
+
+  .dark-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .dark-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 16px;
+  }
+
+  .dark-headline {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 44px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: white;
+    margin-bottom: 20px;
+  }
+
+  .dark-body {
+    font-size: 16px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 32px;
+    max-width: 420px;
+  }
+
+  .dark-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 12px 24px;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.15s;
+  }
+
+  .dark-cta:hover {
+    background: #c75000;
+    transform: translateY(-1px);
+  }
+
+  .dark-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .dark-stat-num {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: white;
+    letter-spacing: -0.02em;
+  }
+
+  .dark-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 2px;
+  }
+
+  /* ─── EVENTS TEASER ─── */
+  .events-section {
+    background: var(--white);
+    padding: 72px 64px;
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 8px;
+  }
+
+  .event-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .event-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .event-date-block {
+    flex-shrink: 0;
+    width: 48px;
+    height: 52px;
+    background: var(--primary-light);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .event-day {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .event-month {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--primary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .event-title {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .event-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: #0f0d14;
+    padding: 64px 64px 40px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand-name {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .footer-brand-tagline {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.4);
+    max-width: 260px;
+  }
+
+  .footer-col-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 16px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover { color: white; }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+  }
+
+  .footer-bottom a {
+    color: rgba(255,255,255,0.25);
+    text-decoration: none;
+  }
+
+  /* ─── UTILITY ─── */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     TOP NAV
+════════════════════════════════════════════════ -->
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="3" width="5" height="14" rx="1"/>
+        <rect x="9.5" y="3" width="4" height="14" rx="1"/>
+        <rect x="15" y="3" width="2" height="14" rx="1"/>
+      </svg>
+    </div>
+    <div class="nav-logo-text">
+      Stadtbibliothek Augsburg
+      <span>stacks</span>
+    </div>
+  </a>
+
+  <nav class="nav-links">
+    <a href="#" class="nav-link active">Start</a>
+    <a href="#" class="nav-link">Suche</a>
+    <a href="#" class="nav-link">Sammlungen</a>
+    <a href="#" class="nav-link">Deins</a>
+  </nav>
+
+  <div class="nav-right">
+    <div class="nav-avatar">TM</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     PRESENCE BAR
+════════════════════════════════════════════════ -->
+<div class="presence-bar">
+  <span class="presence-label">Gerade aktiv in der Bibliothek:</span>
+  <div class="presence-avatars">
+    <div class="presence-avatar">LK</div>
+    <div class="presence-avatar">MR</div>
+    <div class="presence-avatar">JS</div>
+    <div class="presence-avatar">AH</div>
+    <div class="presence-avatar">PW</div>
+    <div class="presence-avatar">TF</div>
+  </div>
+  <span class="presence-more">+14 weitere</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    23 Menschen gerade aktiv
+  </div>
+
+  <h1 class="hero-headline">
+    Dein Einstieg in die<br>
+    Welt der
+    <span class="scribble-word">
+      Geschichte
+      <svg viewBox="0 0 220 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M4 10 C30 4, 60 16, 90 8 C120 2, 150 14, 180 7 C196 4, 210 10, 216 8"
+              stroke="#e05a00" stroke-width="3" stroke-linecap="round" fill="none"/>
+      </svg>
+    </span>
+  </h1>
+
+  <p class="hero-sub">
+    Über 180.000 Medien — Bücher, Hörbücher, Filme, Musik, Events.
+    Entdecke, was Augsburg gerade bewegt.
+  </p>
+
+  <div class="hero-search-wrap">
+    <div class="hero-search-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 12L16 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <input type="search" class="hero-search" placeholder="Titel, Autor, ISBN suchen …">
+    <div class="hero-search-annotation">
+      <span class="hero-annotation-text">einfach lossuchen</span>
+      <svg class="hero-annotation-arrow" width="48" height="28" viewBox="0 0 48 28" fill="none">
+        <path d="M42 4 C30 4, 8 6, 4 22" stroke="#e05a00" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <path d="M4 22 L10 18 M4 22 L6 28" stroke="#e05a00" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     COMMUNITY SHELF
+════════════════════════════════════════════════ -->
+<section class="community-section">
+  <div class="section-header">
+    <h2 class="section-title">Was Augsburg gerade liest</h2>
+    <div class="badge badge-live">Echtzeit</div>
+  </div>
+
+  <div class="shelf-outer on-white">
+    <div class="shelf">
+
+      <!-- Cover 1 — with presence ring -->
+      <div class="book-cover has-presence" style="--presence-color: #7c3aed;">
+        <div class="presence-chip">
+          <span class="presence-chip-dot" style="background: #7c3aed;"></span>
+          LK liest gerade
+        </div>
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #1e3a5f, #2d6a9f);">
+          <div class="book-title">Die Physiker</div>
+          <div class="book-author">Dürrenmatt</div>
+        </div>
+      </div>
+
+      <!-- Cover 2 -->
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #8b1a1a, #c0392b);">
+          <div class="book-title">Steppenwolf</div>
+          <div class="book-author">Hesse</div>
+        </div>
+      </div>
+
+      <!-- Cover 3 — with presence ring -->
+      <div class="book-cover has-presence" style="--presence-color: #0d9488;">
+        <div class="presence-chip">
+          <span class="presence-chip-dot" style="background: #0d9488;"></span>
+          MR liest gerade
+        </div>
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #1a5c2e, #27ae60);">
+          <div class="book-title">Siddharta</div>
+          <div class="book-author">Hesse</div>
+        </div>
+      </div>
+
+      <!-- Cover 4 -->
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #4a1a6e, #8e44ad);">
+          <div class="book-title">Der Prozess</div>
+          <div class="book-author">Kafka</div>
+        </div>
+      </div>
+
+      <!-- Cover 5 -->
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #7d5a00, #c9a227);">
+          <div class="book-title">Homo Faber</div>
+          <div class="book-author">Frisch</div>
+        </div>
+      </div>
+
+      <!-- Cover 6 -->
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #b5431a, #e88c6a);">
+          <div class="book-title">Die Wand</div>
+          <div class="book-author">Haushofer</div>
+        </div>
+      </div>
+
+      <!-- Cover 7 -->
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #0a4a4a, #1a7a6e);">
+          <div class="book-title">Malina</div>
+          <div class="book-author">Bachmann</div>
+        </div>
+      </div>
+
+      <!-- Cover 8 -->
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #3a1530, #7b2d5e);">
+          <div class="book-title">Der Zauberberg</div>
+          <div class="book-author">Thomas Mann</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     MEDIA TABS + NEW ARRIVALS
+════════════════════════════════════════════════ -->
+<div class="media-tabs-section">
+  <div class="section-header" style="margin-bottom:20px;">
+    <h2 class="section-title">Neue Medien</h2>
+  </div>
+  <div class="media-tabs">
+    <button class="media-tab active">Bücher</button>
+    <button class="media-tab">Hörbücher</button>
+    <button class="media-tab">Filme</button>
+    <button class="media-tab">Musik</button>
+    <button class="media-tab">E-Books</button>
+    <button class="media-tab">Events</button>
+  </div>
+</div>
+<div class="media-shelf-section">
+  <div class="shelf-outer">
+    <div class="shelf">
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #2c3e6b, #4a6fa5);">
+          <div class="book-title">Intermezzo</div>
+          <div class="book-author">Sally Rooney</div>
+        </div>
+      </div>
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #5c3317, #a0522d);">
+          <div class="book-title">James</div>
+          <div class="book-author">Percival Everett</div>
+        </div>
+      </div>
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #1f4a35, #3d8b67);">
+          <div class="book-title">The Women</div>
+          <div class="book-author">Kristin Hannah</div>
+        </div>
+      </div>
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #4a0e0e, #8b2222);">
+          <div class="book-title">All Fours</div>
+          <div class="book-author">Miranda July</div>
+        </div>
+      </div>
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #1a1a4a, #3333aa);">
+          <div class="book-title">The God of the Woods</div>
+          <div class="book-author">Lauren Fox</div>
+        </div>
+      </div>
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #2e4a1e, #5a8c3c);">
+          <div class="book-title">Orbital</div>
+          <div class="book-author">Samantha Harvey</div>
+        </div>
+      </div>
+      <div class="book-cover">
+        <div class="book-cover-inner" style="background: linear-gradient(145deg, #4a3800, #8a6a00);">
+          <div class="book-title">Yellowface</div>
+          <div class="book-author">R.F. Kuang</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     LIBRARIAN RECOMMENDATIONS
+════════════════════════════════════════════════ -->
+<section class="librarian-section">
+  <div class="librarian-header">
+    <h2 class="librarian-title">Empfohlen von unseren Bibliothekarinnen</h2>
+    <span class="librarian-annotation">persönlich ausgewählt ✓</span>
+  </div>
+
+  <div class="rec-cards">
+
+    <div class="rec-card">
+      <div class="rec-cover-wrap">
+        <div class="rec-cover" style="background: linear-gradient(145deg, #1a3a5c, #2e6da4);">
+          <div class="book-title" style="font-size:9px;">Die Bücherdiebin</div>
+        </div>
+      </div>
+      <div class="rec-body">
+        <p class="rec-quote">
+          Dieses Buch hat mir monatelang nicht losgelassen. Jedes Mal, wenn ich daran denke, muss ich an meinen Vater denken.
+        </p>
+        <div class="rec-librarian">
+          <div class="rec-librarian-avatar" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">SR</div>
+          <div>
+            <div class="rec-librarian-name">Sandra Richter</div>
+            <div class="rec-librarian-role">
+              <svg width="54" height="24" viewBox="0 0 54 24" fill="none" style="position:absolute; left:-6px; top:-4px;">
+                <ellipse cx="27" cy="12" rx="25" ry="10" stroke="#e05a00" stroke-width="1.2" fill="none" stroke-dasharray="3 2"/>
+              </svg>
+              <span class="rec-librarian-role-text">Lektorat Belletristik</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <div class="rec-cover-wrap">
+        <div class="rec-cover" style="background: linear-gradient(145deg, #3a2a00, #806000); transform: rotate(2deg);">
+          <div class="book-title" style="font-size:9px;">Sapiens</div>
+        </div>
+      </div>
+      <div class="rec-body">
+        <p class="rec-quote">
+          Wenn ich nur ein Sachbuch für den Rest meines Lebens lesen dürfte — dieses wäre es. Absolute Pflichtlektüre.
+        </p>
+        <div class="rec-librarian">
+          <div class="rec-librarian-avatar" style="background: linear-gradient(135deg, #0d9488, #14b8a6);">KW</div>
+          <div>
+            <div class="rec-librarian-name">Klaus Werner</div>
+            <div class="rec-librarian-role">
+              <svg width="54" height="24" viewBox="0 0 54 24" fill="none" style="position:absolute; left:-6px; top:-4px;">
+                <ellipse cx="27" cy="12" rx="25" ry="10" stroke="#e05a00" stroke-width="1.2" fill="none" stroke-dasharray="3 2"/>
+              </svg>
+              <span class="rec-librarian-role-text">Sachbuch & Wissen</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     DARK FEATURE SECTION
+════════════════════════════════════════════════ -->
+<section class="dark-section">
+  <div class="dark-section-inner">
+
+    <div class="dark-book-wrap">
+      <!-- Ambient glow (blurred duplicate) -->
+      <div class="dark-glow" style="background: linear-gradient(145deg, #2563eb, #1d4ed8);"></div>
+      <!-- Hero cover -->
+      <div class="dark-cover" style="background: linear-gradient(145deg, #1e3a7a, #2563eb);">
+        <div class="book-title" style="font-size:18px; margin-bottom:6px;">Der Name der Rose</div>
+        <div class="book-author" style="font-size:13px;">Umberto Eco</div>
+      </div>
+    </div>
+
+    <div class="dark-content">
+      <div class="dark-eyebrow">Sammlung des Monats</div>
+      <h2 class="dark-headline">Krimis, die<br>Geschichte schreiben</h2>
+      <p class="dark-body">
+        Von mittelalterlichen Klöstern bis zur rauchigen Großstadtnacht:
+        unsere Bibliothekarinnen haben die 24 besten historischen Krimis kuratiert.
+      </p>
+      <a href="#" class="dark-cta">
+        Sammlung entdecken
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <div class="dark-stats">
+        <div>
+          <div class="dark-stat-num">24</div>
+          <div class="dark-stat-label">Bücher</div>
+        </div>
+        <div>
+          <div class="dark-stat-num">18</div>
+          <div class="dark-stat-label">verfügbar</div>
+        </div>
+        <div>
+          <div class="dark-stat-num">412</div>
+          <div class="dark-stat-label">Ausleihen diesen Monat</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     EVENTS
+════════════════════════════════════════════════ -->
+<section class="events-section">
+  <div class="section-header">
+    <h2 class="section-title">Veranstaltungen</h2>
+    <a href="#" style="font-size:14px; color:var(--primary); text-decoration:none; font-weight:600; margin-left:auto;">Alle anzeigen →</a>
+  </div>
+
+  <div class="events-grid">
+    <div class="event-card">
+      <div class="event-date-block">
+        <div class="event-day">28</div>
+        <div class="event-month">Mär</div>
+      </div>
+      <div>
+        <div class="event-title">Lesung: Donna Leon</div>
+        <div class="event-meta">19:00 Uhr · Zentralbibliothek · 8 Plätze frei</div>
+      </div>
+    </div>
+    <div class="event-card">
+      <div class="event-date-block">
+        <div class="event-day">3</div>
+        <div class="event-month">Apr</div>
+      </div>
+      <div>
+        <div class="event-title">Buchclub: Sciencefiction</div>
+        <div class="event-meta">17:30 Uhr · Stadtbergen · 12 Plätze frei</div>
+      </div>
+    </div>
+    <div class="event-card">
+      <div class="event-date-block">
+        <div class="event-day">9</div>
+        <div class="event-month">Apr</div>
+      </div>
+      <div>
+        <div class="event-title">Kinder-Lesenacht</div>
+        <div class="event-meta">18:00 Uhr · Zentralbibliothek · 4 Plätze frei</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">Stadtbibliothek Augsburg</div>
+      <p class="footer-brand-tagline">
+        180.000 Medien für alle Augsburgerinnen und Augsburger. Kostenlos anmelden, sofort loslesen.
+      </p>
+    </div>
+    <div>
+      <div class="footer-col-title">Entdecken</div>
+      <ul class="footer-links">
+        <li><a href="#">Neue Medien</a></li>
+        <li><a href="#">Sammlungen</a></li>
+        <li><a href="#">Empfehlungen</a></li>
+        <li><a href="#">Veranstaltungen</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Mein Konto</div>
+      <ul class="footer-links">
+        <li><a href="#">Ausgeliehen</a></li>
+        <li><a href="#">Verlängern</a></li>
+        <li><a href="#">Merkliste</a></li>
+        <li><a href="#">Gebühren</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Bibliothek</div>
+      <ul class="footer-links">
+        <li><a href="#">Öffnungszeiten</a></li>
+        <li><a href="#">Standorte</a></li>
+        <li><a href="#">Anmelden</a></li>
+        <li><a href="#">Kontakt</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2026 Stadtbibliothek Augsburg</span>
+    <div style="display:flex; gap:20px;">
+      <a href="#">Datenschutz</a>
+      <a href="#">Impressum</a>
+      <a href="#">Barrierefreiheit</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Media tab switching
+  document.querySelectorAll('.media-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.media-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Staggered entrance for book covers
+  const covers = document.querySelectorAll('.book-cover');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const siblings = [...el.parentElement.children];
+        const idx = siblings.indexOf(el);
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          el.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, idx * 60);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  covers.forEach(cover => {
+    cover.style.opacity = '0';
+    observer.observe(cover);
+  });
+</script>
+
+</body>
+</html>

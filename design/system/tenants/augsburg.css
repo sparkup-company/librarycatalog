@@ -1,0 +1,31 @@
+/* ═══════════════════════════════════════════════════════════
+   TENANT: Stadtbibliothek Augsburg
+   Load this BEFORE tokens.css and components.css.
+
+   Only override --brand-* and --font-* here.
+   All other tokens derive automatically.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Fonts for this tenant */
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700,800,900&display=swap');
+
+:root {
+  /* ── Brand color ── */
+  --brand-primary:       #e05a00;
+  --brand-primary-50:    #fff5ee;
+  --brand-primary-100:   #fde8d4;
+  --brand-primary-200:   #fbc4a0;
+  --brand-primary-600:   #c44e00;
+  --brand-primary-rgb:   224, 90, 0;
+
+  /* ── Fonts ── */
+  --font-display:  'Readex Pro', system-ui, sans-serif;
+  --font-body:     'Satoshi', system-ui, sans-serif;
+
+  /* ── Augsburg-specific nav bg (warm cream) ── */
+  --nav-bg: rgba(250, 247, 242, 0.90);
+  --color-bg: #faf7f2;
+  --n-50: #faf7f2;
+  --n-100: #f5f0ea;
+}

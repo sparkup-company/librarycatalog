@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buchkachel v6 — Placing</title>
+
+  <link rel="stylesheet" href="system/tenants/augsburg.css">
+  <link rel="stylesheet" href="system/tokens.css">
+  <link rel="stylesheet" href="system/components.css">
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    body { background: #f2f2f7; }
+    .page { max-width: 960px; margin: 0 auto; padding: 64px 32px 120px; }
+
+    .section { margin-bottom: 88px; }
+    .section__label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #aeaeb2;
+      margin-bottom: 6px;
+    }
+    .section__title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #1c1c1e;
+      margin-bottom: 4px;
+    }
+    .section__desc {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-bottom: 28px;
+      max-width: 400px;
+      line-height: 1.5;
+    }
+
+    /* shared cover shadow */
+    .cover-shadow {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.16), 0 1px 4px rgba(0,0,0,0.09);
+    }
+
+    /* shared hover lift */
+    .lift {
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.28s ease;
+    }
+    .lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    /* shared dot colors */
+    .dot--available { background: #34c759; }
+    .dot--borrowed  { background: #ff3b30; }
+    .dot--reserved  { background: #ff9500; }
+
+    [data-lucide] { display: block; }
+
+
+    /* ══════════════════════════════════════════════════════
+       PLACING A — VERTICAL
+       Cover oben, volle Breite. Info darunter gestapelt:
+       Titel · Autor · [Status + Medientyp Zeile]
+    ══════════════════════════════════════════════════════ */
+
+    .row-a {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .pa {
+      width: 148px;
+      cursor: pointer;
+    }
+
+    .pa__cover {
+      width: 148px;
+      aspect-ratio: 2/3;
+      border-radius: 13px;
+      overflow: hidden;
+      margin-bottom: 11px;
+    }
+    .pa__cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pa__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1c1c1e;
+      line-height: 1.3;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pa__author {
+      font-size: 12px;
+      color: #8e8e93;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 6px;
+    }
+    .pa__meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .pa__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .pa__status--available { color: #34c759; }
+    .pa__status--borrowed  { color: #ff3b30; }
+    .pa__status--reserved  { color: #ff9500; }
+    .pa__divider {
+      width: 1px;
+      height: 10px;
+      background: #d1d1d6;
+    }
+    .pa__type {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      color: #aeaeb2;
+    }
+    .pa__type [data-lucide] { width: 11px; height: 11px; stroke-width: 1.8; }
+
+
+    /* ══════════════════════════════════════════════════════
+       PLACING B — HORIZONTAL
+       Cover links, fix. Info rechts gestapelt:
+       Titel (mehrzeilig ok) · Autor · Status · Medientyp
+       Gut für Listen und schmale Kontexte.
+    ══════════════════════════════════════════════════════ */
+
+    .row-b {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 420px;
+    }
+
+    .pb {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      cursor: pointer;
+    }
+
+    .pb__cover {
+      width: 64px;
+      flex-shrink: 0;
+      aspect-ratio: 2/3;
+      border-radius: 9px;
+      overflow: hidden;
+    }
+    .pb__cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pb__info {
+      flex: 1;
+      min-width: 0;
+      padding-top: 2px;
+    }
+    .pb__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1c1c1e;
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+    .pb__author {
+      font-size: 12px;
+      color: #8e8e93;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pb__meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .pb__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .pb__status--available { color: #34c759; }
+    .pb__status--borrowed  { color: #ff3b30; }
+    .pb__status--reserved  { color: #ff9500; }
+    .pb__divider {
+      width: 1px;
+      height: 10px;
+      background: #d1d1d6;
+    }
+    .pb__type {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      color: #aeaeb2;
+    }
+    .pb__type [data-lucide] { width: 11px; height: 11px; stroke-width: 1.8; }
+
+    /* separator between list items */
+    .pb + .pb {
+      padding-top: 12px;
+      border-top: 0.5px solid rgba(60,60,67,0.12);
+    }
+
+
+    /* ══════════════════════════════════════════════════════
+       PLACING C — COMPACT FOOTER
+       Cover dominiert. Direkt darunter eine einzige kompakte
+       Zeile: Titel (truncated) · Status-Dot · Medientyp-Icon.
+       Autor sitzt ganz klein darunter.
+       Maximaler Cover-Anteil, minimale Info-Fläche.
+    ══════════════════════════════════════════════════════ */
+
+    .row-c {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .pc {
+      width: 148px;
+      cursor: pointer;
+    }
+
+    .pc__cover {
+      width: 148px;
+      aspect-ratio: 2/3;
+      border-radius: 13px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .pc__cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pc__row1 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .pc__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1c1c1e;
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    .pc__dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .pc__type-icon {
+      color: #aeaeb2;
+      flex-shrink: 0;
+    }
+    .pc__type-icon [data-lucide] { width: 12px; height: 12px; stroke-width: 1.8; }
+    .pc__author {
+      font-size: 11px;
+      color: #aeaeb2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+  </style>
+</head>
+<body>
+<div class="page">
+
+
+  <!-- ══════════════════════════════════════════════════════
+       PLACING A — VERTICAL
+  ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__label">Placing A</div>
+    <div class="section__title">Vertical</div>
+    <div class="section__desc">Cover oben, voll breit. Titel · Autor · Status + Medientyp gestapelt darunter. Standard-Grid-Layout.</div>
+
+    <div class="row-a">
+
+      <div class="pa">
+        <div class="pa__cover cover-shadow lift">
+          <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+        </div>
+        <div class="pa__title">Thinking, Fast and Slow</div>
+        <div class="pa__author">Daniel Kahneman</div>
+        <div class="pa__meta">
+          <div class="pa__dot dot--available"></div>
+          <span class="pa__status--available">Verfügbar</span>
+          <div class="pa__divider"></div>
+          <div class="pa__type"><i data-lucide="book"></i> Buch</div>
+        </div>
+      </div>
+
+      <div class="pa">
+        <div class="pa__cover cover-shadow lift">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+        </div>
+        <div class="pa__title">The Innovators</div>
+        <div class="pa__author">Walter Isaacson</div>
+        <div class="pa__meta">
+          <div class="pa__dot dot--borrowed"></div>
+          <span class="pa__status--borrowed">Ausgeliehen</span>
+          <div class="pa__divider"></div>
+          <div class="pa__type"><i data-lucide="tablet"></i> E-Book</div>
+        </div>
+      </div>
+
+      <div class="pa">
+        <div class="pa__cover cover-shadow lift">
+          <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+        </div>
+        <div class="pa__title">A Room of One's Own</div>
+        <div class="pa__author">Virginia Woolf</div>
+        <div class="pa__meta">
+          <div class="pa__dot dot--reserved"></div>
+          <span class="pa__status--reserved">Vorgemerkt</span>
+          <div class="pa__divider"></div>
+          <div class="pa__type"><i data-lucide="headphones"></i> Hörbuch</div>
+        </div>
+      </div>
+
+      <div class="pa">
+        <div class="pa__cover cover-shadow lift">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+        </div>
+        <div class="pa__title">Sapiens</div>
+        <div class="pa__author">Yuval Noah Harari</div>
+        <div class="pa__meta">
+          <div class="pa__dot dot--available"></div>
+          <span class="pa__status--available">Verfügbar</span>
+          <div class="pa__divider"></div>
+          <div class="pa__type"><i data-lucide="book"></i> Buch</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       PLACING B — HORIZONTAL
+  ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__label">Placing B</div>
+    <div class="section__title">Horizontal</div>
+    <div class="section__desc">Cover links, Info rechts. Titel darf umbrechen. Gut für Listen, Suchergebnisse, schmale Kontexte.</div>
+
+    <div class="row-b">
+
+      <div class="pb">
+        <div class="pb__cover cover-shadow">
+          <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+        </div>
+        <div class="pb__info">
+          <div class="pb__title">Thinking, Fast and Slow</div>
+          <div class="pb__author">Daniel Kahneman</div>
+          <div class="pb__meta">
+            <div class="pb__dot dot--available"></div>
+            <span class="pb__status--available">Verfügbar</span>
+            <div class="pb__divider"></div>
+            <div class="pb__type"><i data-lucide="book"></i> Buch</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pb">
+        <div class="pb__cover cover-shadow">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+        </div>
+        <div class="pb__info">
+          <div class="pb__title">The Innovators</div>
+          <div class="pb__author">Walter Isaacson</div>
+          <div class="pb__meta">
+            <div class="pb__dot dot--borrowed"></div>
+            <span class="pb__status--borrowed">Ausgeliehen</span>
+            <div class="pb__divider"></div>
+            <div class="pb__type"><i data-lucide="tablet"></i> E-Book</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pb">
+        <div class="pb__cover cover-shadow">
+          <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+        </div>
+        <div class="pb__info">
+          <div class="pb__title">A Room of One's Own</div>
+          <div class="pb__author">Virginia Woolf</div>
+          <div class="pb__meta">
+            <div class="pb__dot dot--reserved"></div>
+            <span class="pb__status--reserved">Vorgemerkt</span>
+            <div class="pb__divider"></div>
+            <div class="pb__type"><i data-lucide="headphones"></i> Hörbuch</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pb">
+        <div class="pb__cover cover-shadow">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+        </div>
+        <div class="pb__info">
+          <div class="pb__title">Sapiens</div>
+          <div class="pb__author">Yuval Noah Harari</div>
+          <div class="pb__meta">
+            <div class="pb__dot dot--available"></div>
+            <span class="pb__status--available">Verfügbar</span>
+            <div class="pb__divider"></div>
+            <div class="pb__type"><i data-lucide="book"></i> Buch</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       PLACING C — COMPACT FOOTER
+  ══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section__label">Placing C</div>
+    <div class="section__title">Compact Footer</div>
+    <div class="section__desc">Cover dominiert fast alles. Darunter eine einzige dichte Zeile: Titel + Status-Dot + Medientyp-Icon. Autor ganz klein. Maximaler Cover-Anteil.</div>
+
+    <div class="row-c">
+
+      <div class="pc">
+        <div class="pc__cover cover-shadow lift">
+          <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+        </div>
+        <div class="pc__row1">
+          <div class="pc__title">Thinking, Fast and Slow</div>
+          <div class="pc__dot dot--available"></div>
+          <div class="pc__type-icon"><i data-lucide="book"></i></div>
+        </div>
+        <div class="pc__author">Daniel Kahneman</div>
+      </div>
+
+      <div class="pc">
+        <div class="pc__cover cover-shadow lift">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+        </div>
+        <div class="pc__row1">
+          <div class="pc__title">The Innovators</div>
+          <div class="pc__dot dot--borrowed"></div>
+          <div class="pc__type-icon"><i data-lucide="tablet"></i></div>
+        </div>
+        <div class="pc__author">Walter Isaacson</div>
+      </div>
+
+      <div class="pc">
+        <div class="pc__cover cover-shadow lift">
+          <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+        </div>
+        <div class="pc__row1">
+          <div class="pc__title">A Room of One's Own</div>
+          <div class="pc__dot dot--reserved"></div>
+          <div class="pc__type-icon"><i data-lucide="headphones"></i></div>
+        </div>
+        <div class="pc__author">Virginia Woolf</div>
+      </div>
+
+      <div class="pc">
+        <div class="pc__cover cover-shadow lift">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+        </div>
+        <div class="pc__row1">
+          <div class="pc__title">Sapiens</div>
+          <div class="pc__dot dot--available"></div>
+          <div class="pc__type-icon"><i data-lucide="book"></i></div>
+        </div>
+        <div class="pc__author">Yuval Noah Harari</div>
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+<script>lucide.createIcons();</script>
+</body>
+</html>

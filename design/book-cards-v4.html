@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Cards v4 — Vibe</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f2f2f7;
+    color: #1c1c1e;
+    min-height: 100vh;
+    padding: 60px 40px;
+  }
+
+  h1 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #8e8e93;
+    margin-bottom: 48px;
+  }
+
+  .section {
+    margin-bottom: 80px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #aeaeb2;
+    margin-bottom: 24px;
+  }
+
+  .cards-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  /* ─── Shared cover stage ─── */
+  .cover-stage {
+    background: #f2f2f7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .cover-stage img {
+    display: block;
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ─── Shared typography ─── */
+  .card-title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #1c1c1e;
+    letter-spacing: -.01em;
+  }
+
+  .card-author {
+    font-size: 13px;
+    font-weight: 400;
+    color: #8e8e93;
+    margin-top: 4px;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #aeaeb2;
+    font-weight: 400;
+  }
+
+  .card-meta i {
+    width: 13px;
+    height: 13px;
+    stroke-width: 1.8;
+    flex-shrink: 0;
+  }
+
+  .card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ─── Shared CTA ─── */
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #007aff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    letter-spacing: -.01em;
+  }
+
+  .card-cta i { width: 14px; height: 14px; stroke-width: 2.2; }
+
+  .card-cta.reserved {
+    color: #ff9500;
+  }
+
+  /* ─── Like button ─── */
+  .card-like {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aeaeb2;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .card-like i { width: 16px; height: 16px; stroke-width: 1.8; }
+  .card-like:hover { color: #ff3b30; }
+
+
+  /* ════════════════════════════════════════
+     VARIANT A — PORTRAIT / EDITORIAL
+     Cover sits on a neutral stage at top.
+     Title dominates below. Everything else recedes.
+  ════════════════════════════════════════ */
+
+  .card-a {
+    background: #fff;
+    border-radius: 16px;
+    width: 200px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+  }
+
+  .card-a .cover-stage {
+    width: 100%;
+    height: 220px;
+    border-radius: 0;
+    padding: 20px;
+  }
+
+  .card-a .cover-stage img {
+    max-height: 180px;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.18), 0 1px 4px rgba(0,0,0,.12);
+  }
+
+  .card-a .card-body {
+    padding: 16px 18px 18px;
+  }
+
+  .card-a .card-title {
+    font-size: 16px;
+  }
+
+  .card-a .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #f2f2f7;
+  }
+
+
+  /* ════════════════════════════════════════
+     VARIANT B — HORIZONTAL / SHELF
+     Cover left as floating object.
+     Title fills the right space, dominates.
+     All other info small and grey.
+  ════════════════════════════════════════ */
+
+  .card-b {
+    background: #fff;
+    border-radius: 16px;
+    width: 340px;
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+  }
+
+  .card-b .cover-stage {
+    width: 110px;
+    min-height: 160px;
+    border-radius: 0;
+    padding: 16px 10px 16px 16px;
+    background: #f7f7f9;
+    flex-shrink: 0;
+  }
+
+  .card-b .cover-stage img {
+    max-height: 128px;
+    border-radius: 3px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.18), 0 1px 3px rgba(0,0,0,.1);
+  }
+
+  .card-b .card-body {
+    flex: 1;
+    padding: 18px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 160px;
+  }
+
+  .card-b .card-title {
+    font-size: 16px;
+  }
+
+  .card-b .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+
+
+  /* ════════════════════════════════════════
+     VARIANT C — MINIMAL / CENTERED
+     Ultra sparse. Cover small and perfectly
+     presented. Title massive. One grey meta
+     line. No decoration.
+  ════════════════════════════════════════ */
+
+  .card-c {
+    background: #fff;
+    border-radius: 16px;
+    width: 240px;
+    padding: 24px 22px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+  }
+
+  .card-c .top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .card-c .cover-stage {
+    width: 64px;
+    height: 80px;
+    flex-shrink: 0;
+    padding: 6px;
+    background: #f2f2f7;
+  }
+
+  .card-c .cover-stage img {
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+
+  .card-c .card-title {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+    flex: 1;
+  }
+
+  .card-c .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #f2f2f7;
+  }
+
+  .card-c .card-author-line {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Book Cards v4 — Vibe</h1>
+
+<!-- ─────────────────────────────── VARIANT A ─── -->
+<div class="section">
+  <div class="section-label">A — Portrait</div>
+  <div class="cards-row">
+
+    <!-- Available -->
+    <div class="card-a">
+      <div class="cover-stage">
+        <img src="https://covers.openlibrary.org/b/isbn/9780143127741-M.jpg" alt="Cover">
+      </div>
+      <div class="card-body">
+        <div class="card-title">Thinking, Fast and Slow</div>
+        <div class="card-author">Daniel Kahneman</div>
+        <div class="card-meta" style="margin-top: 8px;">
+          <span><i data-lucide="book-open"></i> Sachbuch</span>
+          <span><i data-lucide="layers"></i> E-Book</span>
+        </div>
+        <div class="card-footer">
+          <button class="card-cta">
+            <i data-lucide="arrow-down-circle"></i> Ausleihen
+          </button>
+          <button class="card-like"><i data-lucide="heart"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reserved -->
+    <div class="card-a">
+      <div class="cover-stage">
+        <img src="https://covers.openlibrary.org/b/isbn/9780062316097-M.jpg" alt="Cover">
+      </div>
+      <div class="card-body">
+        <div class="card-title">The Innovators</div>
+        <div class="card-author">Walter Isaacson</div>
+        <div class="card-meta" style="margin-top: 8px;">
+          <span><i data-lucide="book-open"></i> Sachbuch</span>
+          <span><i data-lucide="book"></i> Print</span>
+        </div>
+        <div class="card-footer">
+          <button class="card-cta reserved">
+            <i data-lucide="clock"></i> Vormerken
+          </button>
+          <button class="card-like"><i data-lucide="heart"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available -->
+    <div class="card-a">
+      <div class="cover-stage">
+        <img src="https://covers.openlibrary.org/b/isbn/9780374533557-M.jpg" alt="Cover">
+      </div>
+      <div class="card-body">
+        <div class="card-title">A Room of One's Own</div>
+        <div class="card-author">Virginia Woolf</div>
+        <div class="card-meta" style="margin-top: 8px;">
+          <span><i data-lucide="book-open"></i> Literatur</span>
+          <span><i data-lucide="book"></i> Print</span>
+        </div>
+        <div class="card-footer">
+          <button class="card-cta">
+            <i data-lucide="arrow-down-circle"></i> Ausleihen
+          </button>
+          <button class="card-like"><i data-lucide="heart"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ─────────────────────────────── VARIANT B ─── -->
+<div class="section">
+  <div class="section-label">B — Horizontal</div>
+  <div class="cards-row" style="flex-direction: column; max-width: 340px;">
+
+    <!-- Available -->
+    <div class="card-b">
+      <div class="cover-stage">
+        <img src="https://covers.openlibrary.org/b/isbn/9780143127741-M.jpg" alt="Cover">
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-title">Thinking, Fast and Slow</div>
+          <div class="card-author">Daniel Kahneman</div>
+          <div class="card-meta" style="margin-top: 10px;">
+            <span><i data-lucide="book-open"></i> Sachbuch</span>
+            <span><i data-lucide="layers"></i> E-Book</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="card-cta">
+            <i data-lucide="arrow-down-circle"></i> Ausleihen
+          </button>
+          <button class="card-like"><i data-lucide="heart"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reserved -->
+    <div class="card-b">
+      <div class="cover-stage">
+        <img src="https://covers.openlibrary.org/b/isbn/9780062316097-M.jpg" alt="Cover">
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-title">The Innovators</div>
+          <div class="card-author">Walter Isaacson</div>
+          <div class="card-meta" style="margin-top: 10px;">
+            <span><i data-lucide="book-open"></i> Sachbuch</span>
+            <span><i data-lucide="book"></i> Print</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="card-cta reserved">
+            <i data-lucide="clock"></i> Vormerken
+          </button>
+          <button class="card-like"><i data-lucide="heart"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available -->
+    <div class="card-b">
+      <div class="cover-stage">
+        <img src="https://covers.openlibrary.org/b/isbn/9780374533557-M.jpg" alt="Cover">
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-title">A Room of One's Own</div>
+          <div class="card-author">Virginia Woolf</div>
+          <div class="card-meta" style="margin-top: 10px;">
+            <span><i data-lucide="book-open"></i> Literatur</span>
+            <span><i data-lucide="book"></i> Print</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="card-cta">
+            <i data-lucide="arrow-down-circle"></i> Ausleihen
+          </button>
+          <button class="card-like"><i data-lucide="heart"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ─────────────────────────────── VARIANT C ─── -->
+<div class="section">
+  <div class="section-label">C — Minimal</div>
+  <div class="cards-row">
+
+    <!-- Available -->
+    <div class="card-c">
+      <div class="top-row">
+        <div class="card-title">Thinking, Fast and Slow</div>
+        <div class="cover-stage">
+          <img src="https://covers.openlibrary.org/b/isbn/9780143127741-M.jpg" alt="Cover">
+        </div>
+      </div>
+      <div class="card-author-line">
+        <div class="card-author">Daniel Kahneman</div>
+        <div class="card-meta">
+          <span><i data-lucide="book-open"></i> Sachbuch</span>
+          <span><i data-lucide="layers"></i> E-Book</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="card-cta">
+          <i data-lucide="arrow-down-circle"></i> Ausleihen
+        </button>
+        <button class="card-like"><i data-lucide="heart"></i></button>
+      </div>
+    </div>
+
+    <!-- Reserved -->
+    <div class="card-c">
+      <div class="top-row">
+        <div class="card-title">The Innovators</div>
+        <div class="cover-stage">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316097-M.jpg" alt="Cover">
+        </div>
+      </div>
+      <div class="card-author-line">
+        <div class="card-author">Walter Isaacson</div>
+        <div class="card-meta">
+          <span><i data-lucide="book-open"></i> Sachbuch</span>
+          <span><i data-lucide="book"></i> Print</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="card-cta reserved">
+          <i data-lucide="clock"></i> Vormerken
+        </button>
+        <button class="card-like"><i data-lucide="heart"></i></button>
+      </div>
+    </div>
+
+    <!-- Available -->
+    <div class="card-c">
+      <div class="top-row">
+        <div class="card-title">A Room of One's Own</div>
+        <div class="cover-stage">
+          <img src="https://covers.openlibrary.org/b/isbn/9780374533557-M.jpg" alt="Cover">
+        </div>
+      </div>
+      <div class="card-author-line">
+        <div class="card-author">Virginia Woolf</div>
+        <div class="card-meta">
+          <span><i data-lucide="book-open"></i> Literatur</span>
+          <span><i data-lucide="book"></i> Print</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="card-cta">
+          <i data-lucide="arrow-down-circle"></i> Ausleihen
+        </button>
+        <button class="card-like"><i data-lucide="heart"></i></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buchkachel — Cover Overlays</title>
+
+  <link rel="stylesheet" href="system/tenants/augsburg.css">
+  <link rel="stylesheet" href="system/tokens.css">
+  <link rel="stylesheet" href="system/components.css">
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    body { background: #f2f2f7; }
+    .page { max-width: 960px; margin: 0 auto; padding: 64px 32px 120px; }
+
+    .section { margin-bottom: 88px; }
+    .section__label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #aeaeb2;
+      margin-bottom: 6px;
+    }
+    .section__title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #1c1c1e;
+      margin-bottom: 4px;
+    }
+    .section__desc {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    /* ── Base card shell ── */
+    .bc {
+      width: 148px;
+      cursor: pointer;
+    }
+    .bc__cover {
+      width: 148px;
+      aspect-ratio: 2/3;
+      border-radius: 13px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.16), 0 1px 4px rgba(0,0,0,0.09);
+      margin-bottom: 10px;
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.28s ease;
+    }
+    .bc:hover .bc__cover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+    }
+    .bc__cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .bc__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1c1c1e;
+      line-height: 1.3;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bc__author {
+      font-size: 12px;
+      color: #8e8e93;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* borrowed cover tint */
+    .bc__cover--borrowed img { filter: saturate(0.35) brightness(0.95); }
+    .bc__cover--reserved img { filter: saturate(0.6) brightness(0.97); }
+
+    [data-lucide] { display: block; }
+
+
+    /* ══════════════════════════════════════════════════════
+       OVERLAY 1 — TWO CORNERS
+       Status-Dot oben links, Medientyp-Icon oben rechts.
+       Beide als kleine Chips mit Backdrop-Blur.
+    ══════════════════════════════════════════════════════ */
+
+    .o1-tl, .o1-tr {
+      position: absolute;
+      top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 7px;
+      border-radius: 99px;
+      backdrop-filter: blur(12px) saturate(1.8);
+      -webkit-backdrop-filter: blur(12px) saturate(1.8);
+      line-height: 1;
+    }
+    .o1-tl { left: 8px; }
+    .o1-tr {
+      right: 8px;
+      background: rgba(0,0,0,0.38);
+      color: rgba(255,255,255,0.92);
+    }
+    .o1-tr [data-lucide] { width: 11px; height: 11px; stroke-width: 2; }
+
+    .o1-tl--available { background: rgba(52,199,89,0.22); color: #1a7a35; }
+    .o1-tl--borrowed  { background: rgba(255,59,48,0.22);  color: #c0392b; }
+    .o1-tl--reserved  { background: rgba(255,149,0,0.22);  color: #b36200; }
+
+    .o1-tl__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .o1-tl__dot--available { background: #34c759; }
+    .o1-tl__dot--borrowed  { background: #ff3b30; }
+    .o1-tl__dot--reserved  { background: #ff9500; }
+
+
+    /* ══════════════════════════════════════════════════════
+       OVERLAY 2 — BOTTOM FROSTED STRIP
+       Ein Streifen am unteren Cover-Rand mit Blur.
+       Enthält Status links, Medientyp rechts.
+       Cover-Bild bleibt vollständig sichtbar.
+    ══════════════════════════════════════════════════════ */
+
+    .o2-strip {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(16px) saturate(1.6);
+      -webkit-backdrop-filter: blur(16px) saturate(1.6);
+      background: rgba(255,255,255,0.22);
+      border-top: 0.5px solid rgba(255,255,255,0.28);
+    }
+    .o2-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .o2-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .o2-dot--available { background: #34c759; }
+    .o2-dot--borrowed  { background: #ff3b30; }
+    .o2-dot--reserved  { background: #ff9500; }
+
+    .o2-status--available { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .o2-status--borrowed  { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .o2-status--reserved  { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+    .o2-type {
+      color: rgba(255,255,255,0.8);
+    }
+    .o2-type [data-lucide] { width: 13px; height: 13px; stroke-width: 1.8; }
+
+
+    /* ══════════════════════════════════════════════════════
+       OVERLAY 3 — SINGLE CORNER PILL
+       Ein einzelner kompakter Chip oben rechts kombiniert
+       Status-Farbe + Medientyp-Icon. Maximal minimalistisch.
+    ══════════════════════════════════════════════════════ */
+
+    .o3-chip {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 8px;
+      border-radius: 99px;
+      backdrop-filter: blur(14px) saturate(1.8);
+      -webkit-backdrop-filter: blur(14px) saturate(1.8);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .o3-chip [data-lucide] { width: 11px; height: 11px; stroke-width: 2.2; }
+
+    .o3-chip--available {
+      background: rgba(52,199,89,0.28);
+      color: #fff;
+      border: 0.5px solid rgba(52,199,89,0.45);
+    }
+    .o3-chip--borrowed {
+      background: rgba(0,0,0,0.45);
+      color: rgba(255,255,255,0.75);
+      border: 0.5px solid rgba(255,255,255,0.1);
+    }
+    .o3-chip--reserved {
+      background: rgba(255,149,0,0.32);
+      color: #fff;
+      border: 0.5px solid rgba(255,149,0,0.45);
+    }
+
+
+    /* ══════════════════════════════════════════════════════
+       OVERLAY 4 — EDGE ACCENT
+       3px farbige Linie am linken Cover-Rand = Status.
+       Medientyp-Icon als kleines Badge unten rechts.
+       Kein Text-Overlay, kein Blur.
+    ══════════════════════════════════════════════════════ */
+
+    .o4-edge {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      border-radius: 3px 0 0 3px;
+    }
+    .o4-edge--available { background: #34c759; }
+    .o4-edge--borrowed  { background: #ff3b30; }
+    .o4-edge--reserved  { background: #ff9500; }
+
+    .o4-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 26px;
+      height: 26px;
+      border-radius: 99px;
+      background: rgba(0,0,0,0.42);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.85);
+    }
+    .o4-badge [data-lucide] { width: 13px; height: 13px; stroke-width: 1.8; }
+
+  </style>
+</head>
+<body>
+<div class="page">
+
+
+  <!-- OVERLAY 1 — TWO CORNERS -->
+  <div class="section">
+    <div class="section__label">Overlay 1</div>
+    <div class="section__title">Two Corners</div>
+    <div class="section__desc">Status-Chip oben links, Medientyp-Chip oben rechts. Backdrop-Blur, beide lesen sich sofort.</div>
+
+    <div class="row">
+      <div class="bc">
+        <div class="bc__cover">
+          <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+          <div class="o1-tl o1-tl--available">
+            <span class="o1-tl__dot o1-tl__dot--available"></span>Verfügbar
+          </div>
+          <div class="o1-tr"><i data-lucide="book"></i></div>
+        </div>
+        <div class="bc__title">Thinking, Fast and Slow</div>
+        <div class="bc__author">Daniel Kahneman</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover bc__cover--borrowed">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+          <div class="o1-tl o1-tl--borrowed">
+            <span class="o1-tl__dot o1-tl__dot--borrowed"></span>Ausgeliehen
+          </div>
+          <div class="o1-tr"><i data-lucide="tablet"></i></div>
+        </div>
+        <div class="bc__title">The Innovators</div>
+        <div class="bc__author">Walter Isaacson</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover bc__cover--reserved">
+          <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+          <div class="o1-tl o1-tl--reserved">
+            <span class="o1-tl__dot o1-tl__dot--reserved"></span>Vorgemerkt
+          </div>
+          <div class="o1-tr"><i data-lucide="headphones"></i></div>
+        </div>
+        <div class="bc__title">A Room of One's Own</div>
+        <div class="bc__author">Virginia Woolf</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+          <div class="o1-tl o1-tl--available">
+            <span class="o1-tl__dot o1-tl__dot--available"></span>Verfügbar
+          </div>
+          <div class="o1-tr"><i data-lucide="book"></i></div>
+        </div>
+        <div class="bc__title">Sapiens</div>
+        <div class="bc__author">Yuval Noah Harari</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- OVERLAY 2 — BOTTOM STRIP -->
+  <div class="section">
+    <div class="section__label">Overlay 2</div>
+    <div class="section__title">Bottom Strip</div>
+    <div class="section__desc">Frosted-Glass-Streifen am unteren Cover-Rand. Status links, Medientyp rechts. Cover bleibt vollständig sichtbar.</div>
+
+    <div class="row">
+      <div class="bc">
+        <div class="bc__cover">
+          <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+          <div class="o2-strip">
+            <div class="o2-status o2-status--available">
+              <span class="o2-dot o2-dot--available"></span>Verfügbar
+            </div>
+            <div class="o2-type"><i data-lucide="book"></i></div>
+          </div>
+        </div>
+        <div class="bc__title">Thinking, Fast and Slow</div>
+        <div class="bc__author">Daniel Kahneman</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover bc__cover--borrowed">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+          <div class="o2-strip">
+            <div class="o2-status o2-status--borrowed">
+              <span class="o2-dot o2-dot--borrowed"></span>Ausgeliehen
+            </div>
+            <div class="o2-type"><i data-lucide="tablet"></i></div>
+          </div>
+        </div>
+        <div class="bc__title">The Innovators</div>
+        <div class="bc__author">Walter Isaacson</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover bc__cover--reserved">
+          <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+          <div class="o2-strip">
+            <div class="o2-status o2-status--reserved">
+              <span class="o2-dot o2-dot--reserved"></span>Vorgemerkt
+            </div>
+            <div class="o2-type"><i data-lucide="headphones"></i></div>
+          </div>
+        </div>
+        <div class="bc__title">A Room of One's Own</div>
+        <div class="bc__author">Virginia Woolf</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+          <div class="o2-strip">
+            <div class="o2-status o2-status--available">
+              <span class="o2-dot o2-dot--available"></span>Verfügbar
+            </div>
+            <div class="o2-type"><i data-lucide="book"></i></div>
+          </div>
+        </div>
+        <div class="bc__title">Sapiens</div>
+        <div class="bc__author">Yuval Noah Harari</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- OVERLAY 3 — SINGLE CHIP -->
+  <div class="section">
+    <div class="section__label">Overlay 3</div>
+    <div class="section__title">Single Chip</div>
+    <div class="section__desc">Ein einziger Chip oben rechts — Statusfarbe kommuniziert Verfügbarkeit, Icon den Medientyp. Radikalste Reduktion.</div>
+
+    <div class="row">
+      <div class="bc">
+        <div class="bc__cover">
+          <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+          <div class="o3-chip o3-chip--available"><i data-lucide="book"></i></div>
+        </div>
+        <div class="bc__title">Thinking, Fast and Slow</div>
+        <div class="bc__author">Daniel Kahneman</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover bc__cover--borrowed">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+          <div class="o3-chip o3-chip--borrowed"><i data-lucide="tablet"></i></div>
+        </div>
+        <div class="bc__title">The Innovators</div>
+        <div class="bc__author">Walter Isaacson</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover bc__cover--reserved">
+          <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+          <div class="o3-chip o3-chip--reserved"><i data-lucide="headphones"></i></div>
+        </div>
+        <div class="bc__title">A Room of One's Own</div>
+        <div class="bc__author">Virginia Woolf</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+          <div class="o3-chip o3-chip--available"><i data-lucide="book"></i></div>
+        </div>
+        <div class="bc__title">Sapiens</div>
+        <div class="bc__author">Yuval Noah Harari</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- OVERLAY 4 — EDGE ACCENT -->
+  <div class="section">
+    <div class="section__label">Overlay 4</div>
+    <div class="section__title">Edge Accent</div>
+    <div class="section__desc">3px farbige Linie am Cover-Rand = Status. Kleines Icon-Badge unten rechts = Medientyp. Kein Text, kein Blur — rein geometrisch.</div>
+
+    <div class="row">
+      <div class="bc">
+        <div class="bc__cover">
+          <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+          <div class="o4-edge o4-edge--available"></div>
+          <div class="o4-badge"><i data-lucide="book"></i></div>
+        </div>
+        <div class="bc__title">Thinking, Fast and Slow</div>
+        <div class="bc__author">Daniel Kahneman</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover bc__cover--borrowed">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+          <div class="o4-edge o4-edge--borrowed"></div>
+          <div class="o4-badge"><i data-lucide="tablet"></i></div>
+        </div>
+        <div class="bc__title">The Innovators</div>
+        <div class="bc__author">Walter Isaacson</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover bc__cover--reserved">
+          <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+          <div class="o4-edge o4-edge--reserved"></div>
+          <div class="o4-badge"><i data-lucide="headphones"></i></div>
+        </div>
+        <div class="bc__title">A Room of One's Own</div>
+        <div class="bc__author">Virginia Woolf</div>
+      </div>
+
+      <div class="bc">
+        <div class="bc__cover">
+          <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+          <div class="o4-edge o4-edge--available"></div>
+          <div class="o4-badge"><i data-lucide="book"></i></div>
+        </div>
+        <div class="bc__title">Sapiens</div>
+        <div class="bc__author">Yuval Noah Harari</div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<script>lucide.createIcons();</script>
+</body>
+</html>

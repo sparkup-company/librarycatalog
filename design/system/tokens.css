@@ -1,0 +1,304 @@
+/* ═══════════════════════════════════════════════════════════
+   TOKENS.CSS — Stadtbibliothek Design System
+
+   Load order in every HTML file:
+     1. tenants/[id].css   ← brand tokens first
+     2. tokens.css         ← semantic + component tokens (this file)
+     3. components.css     ← component styles
+
+   Tenant override: set --brand-* variables in the tenant file.
+   Everything else derives automatically.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+
+  /* ─────────────────────────────────────────────────────────
+     NEUTRAL PALETTE  (warm undertone, not pure gray)
+     Never reference these directly in components —
+     use semantic tokens below.
+  ───────────────────────────────────────────────────────── */
+  --n-0:    #ffffff;
+  --n-50:   #faf9f7;
+  --n-100:  #f5f3ef;
+  --n-200:  #e8e3dc;
+  --n-300:  #d4cec6;
+  --n-400:  #a89fba;
+  --n-500:  #6b6478;
+  --n-600:  #4a4354;
+  --n-700:  #2a2535;
+  --n-800:  #1a1625;
+  --n-900:  #0d0b14;
+
+
+  /* ─────────────────────────────────────────────────────────
+     BRAND TOKENS  ← ⚠ DEFINED ONLY IN TENANT FILES
+
+     Do NOT set --brand-primary here — tenant files load first
+     but tokens.css loads second and would override them.
+     See tenants/[id].css for values.
+  ───────────────────────────────────────────────────────── */
+
+  /* Fonts — global defaults (same across all current tenants) */
+  --font-display:   'Readex Pro', system-ui, sans-serif;
+  --font-body:      'Satoshi', system-ui, sans-serif;
+
+
+  /* ─────────────────────────────────────────────────────────
+     FUNCTIONAL COLORS  (not tenant-overridable)
+  ───────────────────────────────────────────────────────── */
+  --color-success:        #22c55e;
+  --color-success-light:  #dcfce7;
+  --color-success-dark:   #166534;
+  --color-warning:        #f59e0b;
+  --color-warning-light:  #fef9c3;
+  --color-warning-dark:   #92400e;
+  --color-danger:         #ef4444;
+  --color-danger-light:   #fee2e2;
+  --color-danger-dark:    #991b1b;
+  --color-info:           #0099ff;
+  --color-info-light:     #cce7ff;
+
+
+  /* ─────────────────────────────────────────────────────────
+     SEMANTIC: SURFACE & BACKGROUND
+     These are what components reference.
+  ───────────────────────────────────────────────────────── */
+  --color-bg:              var(--n-50);
+  --color-surface:         var(--n-0);
+  --color-surface-alt:     var(--n-100);
+  --color-border:          var(--n-200);
+  --color-border-strong:   var(--n-300);
+  --color-overlay:         rgba(13, 11, 20, 0.48);
+
+  --color-dark-bg:         var(--n-900);
+  --color-dark-surface:    var(--n-800);
+  --color-dark-border:     rgba(255, 255, 255, 0.08);
+  --color-dark-border-strong: rgba(255, 255, 255, 0.16);
+
+
+  /* ─────────────────────────────────────────────────────────
+     SEMANTIC: TEXT
+  ───────────────────────────────────────────────────────── */
+  --text-primary:          var(--n-900);
+  --text-secondary:        var(--n-500);
+  --text-muted:            var(--n-400);
+  --text-on-dark:          rgba(255, 255, 255, 0.92);
+  --text-on-dark-secondary: rgba(255, 255, 255, 0.55);
+  --text-on-dark-muted:    rgba(255, 255, 255, 0.35);
+
+
+  /* ─────────────────────────────────────────────────────────
+     SEMANTIC: ACTION (derived from brand)
+     Components use --color-action-*, never --brand-* directly.
+     Changing --brand-primary updates all of these.
+  ───────────────────────────────────────────────────────── */
+  --color-action:          var(--brand-primary);
+  --color-action-surface:  var(--brand-primary-100);
+  --color-action-text:     var(--brand-primary);
+  --color-action-hover:    var(--brand-primary-600);
+  --color-action-subtle:   var(--brand-primary-50);
+  --color-action-glow:     rgba(var(--brand-primary-rgb), 0.12);
+  --color-action-glow-md:  rgba(var(--brand-primary-rgb), 0.22);
+
+
+  /* ─────────────────────────────────────────────────────────
+     TYPOGRAPHY SCALE
+  ───────────────────────────────────────────────────────── */
+  --text-2xs:    10px;
+  --text-xs:     12px;
+  --text-sm:     13px;
+  --text-base:   15px;
+  --text-md:     17px;
+  --text-lg:     19px;
+  --text-xl:     22px;
+  --text-2xl:    28px;
+  --text-3xl:    36px;
+  --text-4xl:    48px;
+  --text-5xl:    64px;
+  --text-6xl:    80px;
+  --text-7xl:    96px;
+
+  --weight-light:     300;
+  --weight-regular:   400;
+  --weight-medium:    500;
+  --weight-semibold:  600;
+  --weight-bold:      700;
+  --weight-extrabold: 800;
+  --weight-black:     900;
+
+  --leading-none:     1.0;
+  --leading-tight:    1.1;
+  --leading-snug:     1.25;
+  --leading-normal:   1.5;
+  --leading-relaxed:  1.65;
+  --leading-loose:    1.8;
+
+  --tracking-tightest: -0.04em;
+  --tracking-tight:    -0.03em;
+  --tracking-snug:     -0.02em;
+  --tracking-normal:    0;
+  --tracking-wide:      0.04em;
+  --tracking-wider:     0.08em;
+  --tracking-widest:    0.12em;
+
+
+  /* ─────────────────────────────────────────────────────────
+     SPACING  (4 px base)
+  ───────────────────────────────────────────────────────── */
+  --space-0:   0px;
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-7:   28px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-14:  56px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+  --space-32:  128px;
+
+
+  /* ─────────────────────────────────────────────────────────
+     BORDER RADIUS
+  ───────────────────────────────────────────────────────── */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   18px;
+  --radius-2xl:  22px;
+  --radius-3xl:  28px;
+  --radius-full: 9999px;
+
+
+  /* ─────────────────────────────────────────────────────────
+     SHADOWS
+  ───────────────────────────────────────────────────────── */
+  --shadow-xs:     0 1px 3px rgba(0,0,0,0.06);
+  --shadow-sm:     0 2px 8px rgba(0,0,0,0.07);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.09);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.12);
+  --shadow-xl:     0 16px 56px rgba(0,0,0,0.16);
+  --shadow-cover:  0 8px 28px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.10);
+  --shadow-action: 0 4px 20px var(--color-action-glow);
+  --shadow-inset:  inset 0 1px 2px rgba(0,0,0,0.06);
+
+
+  /* ─────────────────────────────────────────────────────────
+     ANIMATION
+  ───────────────────────────────────────────────────────── */
+  --ease-spring:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out:     cubic-bezier(0, 0, 0.2, 1);
+  --ease-in:      cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
+
+  --duration-instant: 80ms;
+  --duration-fast:    150ms;
+  --duration-normal:  250ms;
+  --duration-slow:    400ms;
+  --duration-slower:  600ms;
+  --duration-slowest: 900ms;
+
+
+  /* ─────────────────────────────────────────────────────────
+     Z-INDEX
+  ───────────────────────────────────────────────────────── */
+  --z-below:    -1;
+  --z-base:      0;
+  --z-raised:    10;
+  --z-dropdown:  100;
+  --z-sticky:    150;
+  --z-nav:       200;
+  --z-modal:     300;
+  --z-toast:     400;
+
+
+  /* ─────────────────────────────────────────────────────────
+     COMPONENT TOKENS
+     Fine-grained defaults for each component.
+     Override these to adjust one component without touching global semantics.
+  ───────────────────────────────────────────────────────── */
+
+  /* ── Nav ── */
+  --nav-height:            64px;
+  --nav-bg:                rgba(250,247,242,0.90);
+  --nav-blur:              20px;
+  --nav-border-color:      transparent;   /* becomes --color-border on .scrolled */
+
+  /* ── Presence bar ── */
+  --presence-height:       44px;
+  --presence-bg:           var(--n-100);
+  --presence-top:          var(--nav-height);
+
+  /* ── Button ── */
+  --btn-radius:            var(--radius-full);
+  --btn-font-family:       var(--font-body);
+  --btn-font-weight:       var(--weight-semibold);
+  --btn-height-sm:         32px;
+  --btn-height-md:         40px;
+  --btn-height-lg:         52px;
+  --btn-px-sm:             var(--space-3);
+  --btn-px-md:             var(--space-5);
+  --btn-px-lg:             var(--space-7);
+  --btn-font-sm:           var(--text-xs);
+  --btn-font-md:           var(--text-sm);
+  --btn-font-lg:           var(--text-base);
+  /* Variants */
+  --btn-primary-bg:        var(--color-action);
+  --btn-primary-text:      #fff;
+  --btn-primary-hover-bg:  var(--color-action-hover);
+  --btn-secondary-bg:      var(--color-surface);
+  --btn-secondary-border:  var(--color-border);
+  --btn-secondary-text:    var(--text-primary);
+  --btn-dark-bg:           var(--n-900);
+  --btn-dark-text:         #fff;
+  --btn-ghost-hover-bg:    rgba(0,0,0,0.05);
+  /* Primary Light variant */
+  --btn-primary-light-bg:       var(--color-action-surface);
+  --btn-primary-light-text:     var(--color-action-text);
+  --btn-primary-light-hover-bg: var(--brand-primary-200);
+
+  /* ── Input ── */
+  --input-height:          52px;
+  --input-radius:          var(--radius-full);
+  --input-bg:              var(--color-surface);
+  --input-border:          var(--color-border);
+  --input-border-focus:    var(--color-action);
+  --input-shadow-focus:    var(--shadow-action);
+  --input-placeholder:     var(--text-muted);
+  --input-font:            var(--font-body);
+
+  /* ── Card ── */
+  --card-radius:           var(--radius-xl);
+  --card-bg:               var(--color-surface);
+  --card-border:           var(--color-border);
+  --card-padding:          var(--space-8);
+  --card-shadow:           var(--shadow-xs);
+  --card-shadow-hover:     var(--shadow-md);
+
+  /* ── Badge ── */
+  --badge-radius:          var(--radius-full);
+  --badge-font-weight:     var(--weight-semibold);
+  --badge-brand-bg:        var(--color-action-surface);
+  --badge-brand-text:      var(--color-action-text);
+
+  /* ── Avatar ── */
+  --avatar-border:         2px solid var(--color-bg);
+  --avatar-bg:             linear-gradient(135deg, var(--brand-primary), var(--brand-primary-200));
+
+  /* ── Book cover ── */
+  --cover-radius:          var(--radius-md);
+  --cover-shadow:          var(--shadow-cover);
+  --cover-hover-translate: -6px;
+
+  /* ── Genre card ── */
+  --genre-card-radius:     var(--radius-2xl);
+
+  /* ── Librarian card ── */
+  --lib-card-radius:       var(--radius-xl);
+}

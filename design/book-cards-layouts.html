@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buchkachel — 10 Layouts</title>
+
+  <link rel="stylesheet" href="system/tenants/augsburg.css">
+  <link rel="stylesheet" href="system/tokens.css">
+  <link rel="stylesheet" href="system/components.css">
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    body { background: #e5e5ea; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 64px 32px 140px; }
+
+    .section { margin-bottom: 96px; }
+    .section__label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: #aeaeb2;
+      margin-bottom: 5px;
+    }
+    .section__title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #1c1c1e;
+      margin-bottom: 4px;
+    }
+    .section__desc {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+    .row--col { flex-direction: column; }
+
+    [data-lucide] { display: block; }
+
+    /* shared dots */
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dot--a { background: #34c759; }
+    .dot--b { background: #ff3b30; }
+    .dot--r { background: #ff9500; }
+
+    /* cover desaturation */
+    .dim img { filter: saturate(0.3) brightness(0.92); }
+    .dim-r img { filter: saturate(0.55) brightness(0.95); }
+
+
+    /* ══════════════════════════════════════════════════════
+       1 — MAPS SHADOW
+       Text liegt direkt auf dem Coverbild.
+       Gestapelte text-shadows erzeugen einen weichen Halo —
+       kein Hintergrund, kein Blur-Element nötig.
+    ══════════════════════════════════════════════════════ */
+
+    .l1 {
+      width: 160px;
+      aspect-ratio: 2/3;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      cursor: pointer;
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+    }
+    .l1:hover { transform: translateY(-4px); }
+    .l1 img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .l1__info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 14px 12px 12px;
+    }
+    .l1__title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.25;
+      margin-bottom: 3px;
+      /* Google Maps technique: stacked text-shadows build a halo */
+      text-shadow:
+        0 0 3px rgba(0,0,0,1),
+        0 0 8px rgba(0,0,0,0.9),
+        0 0 16px rgba(0,0,0,0.8),
+        0 0 28px rgba(0,0,0,0.6),
+        0 1px 2px rgba(0,0,0,1);
+    }
+    .l1__author {
+      font-size: 11px;
+      color: rgba(255,255,255,0.85);
+      text-shadow:
+        0 0 3px rgba(0,0,0,1),
+        0 0 10px rgba(0,0,0,0.8),
+        0 0 20px rgba(0,0,0,0.6);
+    }
+    .l1__meta {
+      position: absolute;
+      top: 10px; right: 10px;
+      display: flex; gap: 5px; align-items: center;
+    }
+    .l1__dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      box-shadow: 0 0 0 1.5px rgba(255,255,255,0.6);
+    }
+    .l1__icon {
+      color: rgba(255,255,255,0.85);
+      filter: drop-shadow(0 0 3px rgba(0,0,0,0.8));
+    }
+    .l1__icon [data-lucide] { width: 13px; height: 13px; stroke-width: 1.8; }
+
+
+    /* ══════════════════════════════════════════════════════
+       2 — FLOATING COVER
+       Weißes Basiscard. Cover klebt über dem oberen Rand,
+       schaut heraus, wirft Schatten auf die Karte.
+    ══════════════════════════════════════════════════════ */
+
+    .l2-wrap {
+      width: 160px;
+      padding-top: 40px;
+      cursor: pointer;
+    }
+    .l2-wrap:hover .l2__cover { transform: translateY(-6px); }
+    .l2__cover {
+      width: 100px;
+      aspect-ratio: 2/3;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 auto -32px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.10);
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+    }
+    .l2__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .l2__card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 44px 16px 18px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+    .l2__title {
+      font-size: 13px; font-weight: 700;
+      color: #1c1c1e; line-height: 1.3;
+      margin-bottom: 3px;
+    }
+    .l2__author { font-size: 11px; color: #8e8e93; margin-bottom: 10px; }
+    .l2__meta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; font-size: 11px; font-weight: 500;
+    }
+    .l2__status--a { color: #34c759; }
+    .l2__status--b { color: #ff3b30; }
+    .l2__status--r { color: #ff9500; }
+    .l2__type { display: flex; align-items: center; gap: 3px; color: #aeaeb2; font-size: 11px; }
+    .l2__type [data-lucide] { width: 11px; height: 11px; stroke-width: 1.8; }
+    .l2__divider { width: 1px; height: 10px; background: #d1d1d6; }
+
+
+    /* ══════════════════════════════════════════════════════
+       3 — POLAROID
+       Cover in weißem Passepartout. Info im unteren
+       weißen Rand, klein und zurückgenommen.
+    ══════════════════════════════════════════════════════ */
+
+    .l3 {
+      background: #fff;
+      padding: 12px 12px 18px;
+      border-radius: 4px;
+      width: 160px;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1), box-shadow 0.28s ease;
+      transform: rotate(-1deg);
+    }
+    .l3:nth-child(2) { transform: rotate(0.8deg); }
+    .l3:nth-child(3) { transform: rotate(-0.5deg); }
+    .l3:nth-child(4) { transform: rotate(1.2deg); }
+    .l3:hover { transform: rotate(0deg) translateY(-4px) !important; box-shadow: 0 12px 36px rgba(0,0,0,0.18); }
+    .l3__img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .l3__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .l3__title {
+      font-size: 12px; font-weight: 600;
+      color: #1c1c1e; line-height: 1.3;
+      margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .l3__sub {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; color: #aeaeb2;
+    }
+    .l3__sub [data-lucide] { width: 10px; height: 10px; stroke-width: 1.8; }
+
+
+    /* ══════════════════════════════════════════════════════
+       4 — TOP LABEL
+       Info steht ÜBER dem Cover, nicht darunter.
+       Ungewohnte Leserichtung — Cover als Abschluss.
+    ══════════════════════════════════════════════════════ */
+
+    .l4 {
+      width: 148px;
+      cursor: pointer;
+    }
+    .l4:hover .l4__cover { transform: translateY(4px); box-shadow: 0 8px 28px rgba(0,0,0,0.18); }
+    .l4__meta {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 500;
+      margin-bottom: 5px;
+    }
+    .l4__type { display: flex; align-items: center; gap: 3px; color: #aeaeb2; }
+    .l4__type [data-lucide] { width: 10px; height: 10px; stroke-width: 1.8; }
+    .l4__divider { width: 1px; height: 8px; background: #c7c7cc; }
+    .l4__status--a { color: #34c759; }
+    .l4__status--b { color: #ff3b30; }
+    .l4__status--r { color: #ff9500; }
+    .l4__title {
+      font-size: 14px; font-weight: 700;
+      color: #1c1c1e; line-height: 1.25;
+      margin-bottom: 2px;
+    }
+    .l4__author {
+      font-size: 12px; color: #8e8e93;
+      margin-bottom: 10px;
+    }
+    .l4__cover {
+      width: 148px;
+      aspect-ratio: 2/3;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.16);
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1), box-shadow 0.28s ease;
+    }
+    .l4__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+
+    /* ══════════════════════════════════════════════════════
+       5 — TICKET
+       Horizontales Kassenbon-Layout. Linke Seite: Cover.
+       Perforierte Trennlinie. Rechts: Info gestapelt.
+    ══════════════════════════════════════════════════════ */
+
+    .l5 {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      width: 340px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .l5:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.13); }
+    .l5__cover {
+      width: 80px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .l5__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .l5__perf {
+      /* perforated divider */
+      width: 1px;
+      flex-shrink: 0;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 5px,
+        #e5e5ea 5px,
+        #e5e5ea 9px
+      );
+      margin: 10px 0;
+    }
+    .l5__info {
+      flex: 1; padding: 14px 14px 14px 12px;
+      display: flex; flex-direction: column; justify-content: center; gap: 3px;
+    }
+    .l5__title { font-size: 14px; font-weight: 700; color: #1c1c1e; line-height: 1.25; }
+    .l5__author { font-size: 12px; color: #8e8e93; }
+    .l5__meta {
+      margin-top: 8px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 500;
+    }
+    .l5__type { display: flex; align-items: center; gap: 3px; color: #aeaeb2; }
+    .l5__type [data-lucide] { width: 11px; height: 11px; stroke-width: 1.8; }
+    .l5__divider { width: 1px; height: 9px; background: #d1d1d6; }
+    .l5__status--a { color: #34c759; }
+    .l5__status--b { color: #ff3b30; }
+    .l5__status--r { color: #ff9500; }
+
+
+    /* ══════════════════════════════════════════════════════
+       6 — CINEMA POSTER
+       Hohes schmales Format. Sanfter Gradient über
+       unteres Coverdrittel — Status + Typ als Icons.
+    ══════════════════════════════════════════════════════ */
+
+    .l6 {
+      width: 130px;
+      aspect-ratio: 9/16;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      cursor: pointer;
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+    }
+    .l6:hover { transform: scale(1.03); }
+    .l6 img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .l6__gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent 40%,
+        rgba(0,0,0,0.07) 55%,
+        rgba(0,0,0,0.55) 78%,
+        rgba(0,0,0,0.82) 100%
+      );
+    }
+    .l6__info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 10px 11px 12px;
+    }
+    .l6__title {
+      font-size: 13px; font-weight: 700;
+      color: #fff; line-height: 1.2;
+      margin-bottom: 3px;
+    }
+    .l6__author { font-size: 10px; color: rgba(255,255,255,0.65); margin-bottom: 7px; }
+    .l6__meta {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .l6__dot { width: 6px; height: 6px; border-radius: 50%; }
+    .l6__icon { color: rgba(255,255,255,0.65); }
+    .l6__icon [data-lucide] { width: 12px; height: 12px; stroke-width: 1.8; }
+
+
+    /* ══════════════════════════════════════════════════════
+       7 — COMPACT ROW
+       Ultra-minimal. Alles auf einer Zeile.
+       Thumbnail winzig. Für dichte Listen.
+    ══════════════════════════════════════════════════════ */
+
+    .l7 {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #fff;
+      border-radius: 11px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .l7:hover { background: #f9f9f9; }
+    .l7__cover {
+      width: 36px; height: 52px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .l7__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .l7__text { flex: 1; min-width: 0; }
+    .l7__title {
+      font-size: 13px; font-weight: 600;
+      color: #1c1c1e; line-height: 1.2;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .l7__author { font-size: 11px; color: #8e8e93; margin-top: 1px; }
+    .l7__right {
+      display: flex; flex-direction: column; align-items: flex-end;
+      gap: 5px; flex-shrink: 0;
+    }
+    .l7__dot { width: 8px; height: 8px; border-radius: 50%; }
+    .l7__type { color: #aeaeb2; }
+    .l7__type [data-lucide] { width: 12px; height: 12px; stroke-width: 1.8; }
+
+
+    /* ══════════════════════════════════════════════════════
+       8 — MAGAZINE SPREAD
+       Landscape. Cover links 44%, großer Titel rechts.
+    ══════════════════════════════════════════════════════ */
+
+    .l8 {
+      width: 380px;
+      height: 200px;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .l8:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,0.13); }
+    .l8__cover {
+      width: 44%;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .l8__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .l8__info {
+      flex: 1; padding: 22px 20px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .l8__title {
+      font-size: 20px; font-weight: 800;
+      color: #1c1c1e; line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+    .l8__author { font-size: 12px; color: #8e8e93; margin-top: 6px; }
+    .l8__meta {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 500;
+    }
+    .l8__type { display: flex; align-items: center; gap: 3px; color: #aeaeb2; }
+    .l8__type [data-lucide] { width: 11px; height: 11px; stroke-width: 1.8; }
+    .l8__divider { width: 1px; height: 9px; background: #d1d1d6; }
+    .l8__status--a { color: #34c759; }
+    .l8__status--b { color: #ff3b30; }
+    .l8__status--r { color: #ff9500; }
+
+
+    /* ══════════════════════════════════════════════════════
+       9 — DARK SPOTLIGHT
+       Dunkle Karte. Cover leuchtet heraus.
+       Status als leuchtender Dot, Typ als Icon.
+    ══════════════════════════════════════════════════════ */
+
+    .l9 {
+      width: 148px;
+      background: #1c1c1e;
+      border-radius: 18px;
+      padding: 16px 16px 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.28);
+      cursor: pointer;
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+    }
+    .l9:hover { transform: translateY(-4px); }
+    .l9__cover {
+      width: 100%;
+      aspect-ratio: 2/3;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    }
+    .l9__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .l9__title {
+      font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.92); line-height: 1.25;
+      margin-bottom: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .l9__author { font-size: 11px; color: rgba(255,255,255,0.38); margin-bottom: 10px; }
+    .l9__meta {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 500;
+    }
+    .l9__glow-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+    }
+    .l9__glow-dot--a {
+      background: #34c759;
+      box-shadow: 0 0 6px #34c759, 0 0 10px rgba(52,199,89,0.6);
+    }
+    .l9__glow-dot--b {
+      background: #ff3b30;
+      box-shadow: 0 0 6px #ff3b30, 0 0 10px rgba(255,59,48,0.6);
+    }
+    .l9__glow-dot--r {
+      background: #ff9500;
+      box-shadow: 0 0 6px #ff9500, 0 0 10px rgba(255,149,0,0.6);
+    }
+    .l9__type { display: flex; align-items: center; gap: 3px; color: rgba(255,255,255,0.3); font-size: 11px; }
+    .l9__type [data-lucide] { width: 11px; height: 11px; stroke-width: 1.8; }
+    .l9__divider { width: 1px; height: 9px; background: rgba(255,255,255,0.12); }
+    .l9__status--a { color: rgba(52,199,89,0.9); }
+    .l9__status--b { color: rgba(255,59,48,0.9); }
+    .l9__status--r { color: rgba(255,149,0,0.9); }
+
+
+    /* ══════════════════════════════════════════════════════
+       10 — INFO SIDEBAR
+       Cover rechts, schmale Info-Spalte links.
+       Titel vertikal von unten nach oben lesbar —
+       für sehr schmale Grids oder Seitenleisten.
+    ══════════════════════════════════════════════════════ */
+
+    .l10 {
+      display: flex;
+      gap: 0;
+      width: 180px;
+      cursor: pointer;
+    }
+    .l10:hover .l10__cover { transform: translateX(3px); box-shadow: 0 8px 28px rgba(0,0,0,0.22); }
+    .l10__sidebar {
+      width: 28px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+    }
+    .l10__dot { width: 8px; height: 8px; border-radius: 50%; }
+    .l10__title-vert {
+      font-size: 11px;
+      font-weight: 700;
+      color: #1c1c1e;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      white-space: nowrap;
+      overflow: hidden;
+      max-height: 140px;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+    .l10__icon { color: #c7c7cc; }
+    .l10__icon [data-lucide] { width: 12px; height: 12px; stroke-width: 1.8; }
+    .l10__cover {
+      flex: 1;
+      aspect-ratio: 2/3;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.16);
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1), box-shadow 0.28s ease;
+    }
+    .l10__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  </style>
+</head>
+<body>
+<div class="page">
+
+
+  <!-- 1 — MAPS SHADOW -->
+  <div class="section">
+    <div class="section__label">Layout 1</div>
+    <div class="section__title">Maps Shadow</div>
+    <div class="section__desc">Kein Hintergrundpanel. Text liegt direkt auf dem Cover — gestapelte text-shadows erzeugen einen weichen Halo, der auf jedem Foto lesbar bleibt.</div>
+    <div class="row">
+
+      <div class="l1">
+        <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+        <div class="l1__meta">
+          <div class="l1__dot dot dot--a"></div>
+          <div class="l1__icon"><i data-lucide="book"></i></div>
+        </div>
+        <div class="l1__info">
+          <div class="l1__title">Thinking, Fast and Slow</div>
+          <div class="l1__author">Daniel Kahneman</div>
+        </div>
+      </div>
+
+      <div class="l1 dim">
+        <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+        <div class="l1__meta">
+          <div class="l1__dot dot dot--b"></div>
+          <div class="l1__icon"><i data-lucide="tablet"></i></div>
+        </div>
+        <div class="l1__info">
+          <div class="l1__title">The Innovators</div>
+          <div class="l1__author">Walter Isaacson</div>
+        </div>
+      </div>
+
+      <div class="l1 dim-r">
+        <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+        <div class="l1__meta">
+          <div class="l1__dot dot dot--r"></div>
+          <div class="l1__icon"><i data-lucide="headphones"></i></div>
+        </div>
+        <div class="l1__info">
+          <div class="l1__title">A Room of One's Own</div>
+          <div class="l1__author">Virginia Woolf</div>
+        </div>
+      </div>
+
+      <div class="l1">
+        <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+        <div class="l1__meta">
+          <div class="l1__dot dot dot--a"></div>
+          <div class="l1__icon"><i data-lucide="book"></i></div>
+        </div>
+        <div class="l1__info">
+          <div class="l1__title">Sapiens</div>
+          <div class="l1__author">Yuval Noah Harari</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 2 — FLOATING COVER -->
+  <div class="section">
+    <div class="section__label">Layout 2</div>
+    <div class="section__title">Floating Cover</div>
+    <div class="section__desc">Cover ragt aus dem weißen Basiscard heraus und wirft Schatten darauf. Info zentriert im Kartenbereich darunter.</div>
+    <div class="row">
+
+      <div class="l2-wrap">
+        <div class="l2__cover"><img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+        <div class="l2__card">
+          <div class="l2__title">Thinking, Fast and Slow</div>
+          <div class="l2__author">Daniel Kahneman</div>
+          <div class="l2__meta">
+            <div class="dot dot--a"></div>
+            <span class="l2__status--a">Verfügbar</span>
+            <div class="l2__divider"></div>
+            <div class="l2__type"><i data-lucide="book"></i> Buch</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l2-wrap">
+        <div class="l2__cover dim"><img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+        <div class="l2__card">
+          <div class="l2__title">The Innovators</div>
+          <div class="l2__author">Walter Isaacson</div>
+          <div class="l2__meta">
+            <div class="dot dot--b"></div>
+            <span class="l2__status--b">Ausgeliehen</span>
+            <div class="l2__divider"></div>
+            <div class="l2__type"><i data-lucide="tablet"></i> E-Book</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l2-wrap">
+        <div class="l2__cover dim-r"><img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt=""></div>
+        <div class="l2__card">
+          <div class="l2__title">A Room of One's Own</div>
+          <div class="l2__author">Virginia Woolf</div>
+          <div class="l2__meta">
+            <div class="dot dot--r"></div>
+            <span class="l2__status--r">Vorgemerkt</span>
+            <div class="l2__divider"></div>
+            <div class="l2__type"><i data-lucide="headphones"></i> Hörbuch</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l2-wrap">
+        <div class="l2__cover"><img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt=""></div>
+        <div class="l2__card">
+          <div class="l2__title">Sapiens</div>
+          <div class="l2__author">Yuval Noah Harari</div>
+          <div class="l2__meta">
+            <div class="dot dot--a"></div>
+            <span class="l2__status--a">Verfügbar</span>
+            <div class="l2__divider"></div>
+            <div class="l2__type"><i data-lucide="book"></i> Buch</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 3 — POLAROID -->
+  <div class="section">
+    <div class="section__label">Layout 3</div>
+    <div class="section__title">Polaroid</div>
+    <div class="section__desc">Weißer Rahmen wie ein Sofortbild. Leichter Drall pro Karte — gibt dem Grid Leben.</div>
+    <div class="row" style="align-items: center;">
+
+      <div class="l3">
+        <div class="l3__img"><img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+        <div class="l3__title">Thinking, Fast and Slow</div>
+        <div class="l3__sub"><span class="dot dot--a"></span> Verfügbar <i data-lucide="book"></i></div>
+      </div>
+
+      <div class="l3 dim">
+        <div class="l3__img"><img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+        <div class="l3__title">The Innovators</div>
+        <div class="l3__sub"><span class="dot dot--b"></span> Ausgeliehen <i data-lucide="tablet"></i></div>
+      </div>
+
+      <div class="l3 dim-r">
+        <div class="l3__img"><img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt=""></div>
+        <div class="l3__title">A Room of One's Own</div>
+        <div class="l3__sub"><span class="dot dot--r"></span> Vorgemerkt <i data-lucide="headphones"></i></div>
+      </div>
+
+      <div class="l3">
+        <div class="l3__img"><img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt=""></div>
+        <div class="l3__title">Sapiens</div>
+        <div class="l3__sub"><span class="dot dot--a"></span> Verfügbar <i data-lucide="book"></i></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 4 — TOP LABEL -->
+  <div class="section">
+    <div class="section__label">Layout 4</div>
+    <div class="section__title">Top Label</div>
+    <div class="section__desc">Info steht über dem Cover. Umgekehrte Leserichtung — Titel springt zuerst ins Auge, Cover folgt als visuelle Bestätigung.</div>
+    <div class="row">
+
+      <div class="l4">
+        <div class="l4__meta">
+          <div class="l4__type"><i data-lucide="book"></i> Buch</div>
+          <div class="l4__divider"></div>
+          <span class="l4__status--a">Verfügbar</span>
+        </div>
+        <div class="l4__title">Thinking, Fast and Slow</div>
+        <div class="l4__author">Daniel Kahneman</div>
+        <div class="l4__cover"><img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+      </div>
+
+      <div class="l4">
+        <div class="l4__meta">
+          <div class="l4__type"><i data-lucide="tablet"></i> E-Book</div>
+          <div class="l4__divider"></div>
+          <span class="l4__status--b">Ausgeliehen</span>
+        </div>
+        <div class="l4__title">The Innovators</div>
+        <div class="l4__author">Walter Isaacson</div>
+        <div class="l4__cover dim"><img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+      </div>
+
+      <div class="l4">
+        <div class="l4__meta">
+          <div class="l4__type"><i data-lucide="headphones"></i> Hörbuch</div>
+          <div class="l4__divider"></div>
+          <span class="l4__status--r">Vorgemerkt</span>
+        </div>
+        <div class="l4__title">A Room of One's Own</div>
+        <div class="l4__author">Virginia Woolf</div>
+        <div class="l4__cover dim-r"><img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt=""></div>
+      </div>
+
+      <div class="l4">
+        <div class="l4__meta">
+          <div class="l4__type"><i data-lucide="book"></i> Buch</div>
+          <div class="l4__divider"></div>
+          <span class="l4__status--a">Verfügbar</span>
+        </div>
+        <div class="l4__title">Sapiens</div>
+        <div class="l4__author">Yuval Noah Harari</div>
+        <div class="l4__cover"><img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt=""></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 5 — TICKET -->
+  <div class="section">
+    <div class="section__label">Layout 5</div>
+    <div class="section__title">Ticket</div>
+    <div class="section__desc">Horizontales Kassenbon-Format. Perforierte Trennlinie zwischen Cover und Info. Gut für Listen und Suchergebnisse.</div>
+    <div class="row row--col" style="max-width: 340px;">
+
+      <div class="l5">
+        <div class="l5__cover"><img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+        <div class="l5__perf"></div>
+        <div class="l5__info">
+          <div class="l5__title">Thinking, Fast and Slow</div>
+          <div class="l5__author">Daniel Kahneman</div>
+          <div class="l5__meta">
+            <div class="dot dot--a"></div><span class="l5__status--a">Verfügbar</span>
+            <div class="l5__divider"></div>
+            <div class="l5__type"><i data-lucide="book"></i> Buch</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l5">
+        <div class="l5__cover dim"><img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+        <div class="l5__perf"></div>
+        <div class="l5__info">
+          <div class="l5__title">The Innovators</div>
+          <div class="l5__author">Walter Isaacson</div>
+          <div class="l5__meta">
+            <div class="dot dot--b"></div><span class="l5__status--b">Ausgeliehen</span>
+            <div class="l5__divider"></div>
+            <div class="l5__type"><i data-lucide="tablet"></i> E-Book</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l5">
+        <div class="l5__cover dim-r"><img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt=""></div>
+        <div class="l5__perf"></div>
+        <div class="l5__info">
+          <div class="l5__title">A Room of One's Own</div>
+          <div class="l5__author">Virginia Woolf</div>
+          <div class="l5__meta">
+            <div class="dot dot--r"></div><span class="l5__status--r">Vorgemerkt</span>
+            <div class="l5__divider"></div>
+            <div class="l5__type"><i data-lucide="headphones"></i> Hörbuch</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 6 — CINEMA POSTER -->
+  <div class="section">
+    <div class="section__label">Layout 6</div>
+    <div class="section__title">Cinema Poster</div>
+    <div class="section__desc">Hohes schmales Format (9:16). Sanfter Gradient über das untere Coverdrittel — kein harter Schnitt, Cover dominiert.</div>
+    <div class="row">
+
+      <div class="l6">
+        <img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt="">
+        <div class="l6__gradient"></div>
+        <div class="l6__info">
+          <div class="l6__title">Thinking, Fast and Slow</div>
+          <div class="l6__author">Daniel Kahneman</div>
+          <div class="l6__meta">
+            <div class="l6__dot dot dot--a"></div>
+            <div class="l6__icon"><i data-lucide="book"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l6 dim">
+        <img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt="">
+        <div class="l6__gradient"></div>
+        <div class="l6__info">
+          <div class="l6__title">The Innovators</div>
+          <div class="l6__author">Walter Isaacson</div>
+          <div class="l6__meta">
+            <div class="l6__dot dot dot--b"></div>
+            <div class="l6__icon"><i data-lucide="tablet"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l6 dim-r">
+        <img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt="">
+        <div class="l6__gradient"></div>
+        <div class="l6__info">
+          <div class="l6__title">A Room of One's Own</div>
+          <div class="l6__author">Virginia Woolf</div>
+          <div class="l6__meta">
+            <div class="l6__dot dot dot--r"></div>
+            <div class="l6__icon"><i data-lucide="headphones"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l6">
+        <img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt="">
+        <div class="l6__gradient"></div>
+        <div class="l6__info">
+          <div class="l6__title">Sapiens</div>
+          <div class="l6__author">Yuval Noah Harari</div>
+          <div class="l6__meta">
+            <div class="l6__dot dot dot--a"></div>
+            <div class="l6__icon"><i data-lucide="book"></i></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 7 — COMPACT ROW -->
+  <div class="section">
+    <div class="section__label">Layout 7</div>
+    <div class="section__title">Compact Row</div>
+    <div class="section__desc">Ultra-dichte Liste. Kleinstes Thumbnail (36×52px), alles horizontal. Für Suchergebnisse oder Sidebars.</div>
+    <div class="row row--col" style="max-width: 420px;">
+
+      <div class="l7">
+        <div class="l7__cover"><img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+        <div class="l7__text">
+          <div class="l7__title">Thinking, Fast and Slow</div>
+          <div class="l7__author">Daniel Kahneman</div>
+        </div>
+        <div class="l7__right">
+          <div class="l7__dot dot--a"></div>
+          <div class="l7__type"><i data-lucide="book"></i></div>
+        </div>
+      </div>
+
+      <div class="l7 dim">
+        <div class="l7__cover"><img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+        <div class="l7__text">
+          <div class="l7__title">The Innovators</div>
+          <div class="l7__author">Walter Isaacson</div>
+        </div>
+        <div class="l7__right">
+          <div class="l7__dot dot--b"></div>
+          <div class="l7__type"><i data-lucide="tablet"></i></div>
+        </div>
+      </div>
+
+      <div class="l7 dim-r">
+        <div class="l7__cover"><img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt=""></div>
+        <div class="l7__text">
+          <div class="l7__title">A Room of One's Own</div>
+          <div class="l7__author">Virginia Woolf</div>
+        </div>
+        <div class="l7__right">
+          <div class="l7__dot dot--r"></div>
+          <div class="l7__type"><i data-lucide="headphones"></i></div>
+        </div>
+      </div>
+
+      <div class="l7">
+        <div class="l7__cover"><img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt=""></div>
+        <div class="l7__text">
+          <div class="l7__title">Sapiens</div>
+          <div class="l7__author">Yuval Noah Harari</div>
+        </div>
+        <div class="l7__right">
+          <div class="l7__dot dot--a"></div>
+          <div class="l7__type"><i data-lucide="book"></i></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 8 — MAGAZINE SPREAD -->
+  <div class="section">
+    <div class="section__label">Layout 8</div>
+    <div class="section__title">Magazine Spread</div>
+    <div class="section__desc">Landscape. Cover links 44%, großer Titel rechts. Für Featured-Bereiche und Hero-Sektionen.</div>
+    <div class="row row--col" style="max-width: 380px;">
+
+      <div class="l8">
+        <div class="l8__cover"><img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+        <div class="l8__info">
+          <div>
+            <div class="l8__title">Thinking, Fast and Slow</div>
+            <div class="l8__author">Daniel Kahneman</div>
+          </div>
+          <div class="l8__meta">
+            <div class="dot dot--a"></div><span class="l8__status--a">Verfügbar</span>
+            <div class="l8__divider"></div>
+            <div class="l8__type"><i data-lucide="book"></i> Buch</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="l8">
+        <div class="l8__cover dim"><img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+        <div class="l8__info">
+          <div>
+            <div class="l8__title">The Innovators</div>
+            <div class="l8__author">Walter Isaacson</div>
+          </div>
+          <div class="l8__meta">
+            <div class="dot dot--b"></div><span class="l8__status--b">Ausgeliehen</span>
+            <div class="l8__divider"></div>
+            <div class="l8__type"><i data-lucide="tablet"></i> E-Book</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 9 — DARK SPOTLIGHT -->
+  <div class="section">
+    <div class="section__label">Layout 9</div>
+    <div class="section__title">Dark Spotlight</div>
+    <div class="section__desc">Dunkle Karte. Cover leuchtet heraus. Status als glühender Dot. Für Dark-Mode oder Empfehlungs-Sektionen.</div>
+    <div class="row">
+
+      <div class="l9">
+        <div class="l9__cover"><img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+        <div class="l9__title">Thinking, Fast and Slow</div>
+        <div class="l9__author">Daniel Kahneman</div>
+        <div class="l9__meta">
+          <div class="l9__glow-dot l9__glow-dot--a"></div>
+          <span class="l9__status--a">Verfügbar</span>
+          <div class="l9__divider"></div>
+          <div class="l9__type"><i data-lucide="book"></i> Buch</div>
+        </div>
+      </div>
+
+      <div class="l9">
+        <div class="l9__cover dim"><img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+        <div class="l9__title">The Innovators</div>
+        <div class="l9__author">Walter Isaacson</div>
+        <div class="l9__meta">
+          <div class="l9__glow-dot l9__glow-dot--b"></div>
+          <span class="l9__status--b">Ausgeliehen</span>
+          <div class="l9__divider"></div>
+          <div class="l9__type"><i data-lucide="tablet"></i> E-Book</div>
+        </div>
+      </div>
+
+      <div class="l9">
+        <div class="l9__cover dim-r"><img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt=""></div>
+        <div class="l9__title">A Room of One's Own</div>
+        <div class="l9__author">Virginia Woolf</div>
+        <div class="l9__meta">
+          <div class="l9__glow-dot l9__glow-dot--r"></div>
+          <span class="l9__status--r">Vorgemerkt</span>
+          <div class="l9__divider"></div>
+          <div class="l9__type"><i data-lucide="headphones"></i> Hörbuch</div>
+        </div>
+      </div>
+
+      <div class="l9">
+        <div class="l9__cover"><img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt=""></div>
+        <div class="l9__title">Sapiens</div>
+        <div class="l9__author">Yuval Noah Harari</div>
+        <div class="l9__meta">
+          <div class="l9__glow-dot l9__glow-dot--a"></div>
+          <span class="l9__status--a">Verfügbar</span>
+          <div class="l9__divider"></div>
+          <div class="l9__type"><i data-lucide="book"></i> Buch</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 10 — INFO SIDEBAR -->
+  <div class="section">
+    <div class="section__label">Layout 10</div>
+    <div class="section__title">Info Sidebar</div>
+    <div class="section__desc">Schmale linke Spalte mit vertikalem Titel. Dot oben = Status, Icon unten = Typ. Für sehr schmale Grids und Seitenleisten-Kontexte.</div>
+    <div class="row">
+
+      <div class="l10">
+        <div class="l10__sidebar">
+          <div class="l10__dot dot dot--a"></div>
+          <div class="l10__title-vert">Thinking, Fast and Slow</div>
+          <div class="l10__icon"><i data-lucide="book"></i></div>
+        </div>
+        <div class="l10__cover"><img src="https://covers.openlibrary.org/b/isbn/9780143127741-L.jpg" alt=""></div>
+      </div>
+
+      <div class="l10">
+        <div class="l10__sidebar">
+          <div class="l10__dot dot dot--b"></div>
+          <div class="l10__title-vert">The Innovators</div>
+          <div class="l10__icon"><i data-lucide="tablet"></i></div>
+        </div>
+        <div class="l10__cover dim"><img src="https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg" alt=""></div>
+      </div>
+
+      <div class="l10">
+        <div class="l10__sidebar">
+          <div class="l10__dot dot dot--r"></div>
+          <div class="l10__title-vert">A Room of One's Own</div>
+          <div class="l10__icon"><i data-lucide="headphones"></i></div>
+        </div>
+        <div class="l10__cover dim-r"><img src="https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg" alt=""></div>
+      </div>
+
+      <div class="l10">
+        <div class="l10__sidebar">
+          <div class="l10__dot dot dot--a"></div>
+          <div class="l10__title-vert">Sapiens</div>
+          <div class="l10__icon"><i data-lucide="book"></i></div>
+        </div>
+        <div class="l10__cover"><img src="https://covers.openlibrary.org/b/isbn/9780062316110-L.jpg" alt=""></div>
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+<script>lucide.createIcons();</script>
+</body>
+</html>
